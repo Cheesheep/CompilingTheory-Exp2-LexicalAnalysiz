@@ -61,7 +61,7 @@ public class Solution {
         if (c == '.') {
             return ".";
         }
-        if (c == 'e' || c == 'E') {
+        if (c == 'E') {
             return "exp";
         }
         if (c == ' ') {

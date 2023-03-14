@@ -1,5 +1,6 @@
 package part01;
 
+import java.awt.desktop.OpenFilesHandler;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,6 +19,7 @@ public class identifyNumber {
     String line = null;
     FileWriter writer;
     private StringBuilder Numbers = new StringBuilder();
+    private StringBuilder Others = new StringBuilder();
     private char NowWord,NextWord;//获得每个句子中的每一个字符
     boolean isException = false; //判断该串数字后面是否有异常
 
@@ -50,34 +52,29 @@ public class identifyNumber {
             NowWord = line.charAt(i);
             NextWord = (i == size - 1 )? '@':line.charAt(i + 1);
             //先判断数字
-            state = solution.getNowState(state,NowWord);
-            if(state == -1){
+            if(Character.isDigit(NowWord) || Numbers.length() != 0){
+                state = solution.getNowState(state,NowWord);
+                Numbers.append(NowWord);
+                if(solution.getNowState(state,NextWord) == -1){//进入其他
+                    this.writer.write("(数字, " + Others + " )\n");
+                    Numbers = new StringBuilder();//清空number
+                }
+                else if(state == -2){ //进入异常
+                    isException = true;
+                }
 
             }
-            else if(state == -2){ //没有进入err
-            }
-            else{
-                Numbers.append(NowWord);
-            }
-
-            /*
-            *
-            *
-            * */
-            if(Character.isDigit(NowWord))
-            {
-                Numbers.append(NowWord);
-                if(!Character.isDigit(NextWord) && !symbol.contains(NextWord)){
-                    //下一个不是数字,也不是特殊字符. + - e E
-                    if(solution.isUnsignedNumber(Numbers.toString())){
-                        //判断前面的是否是正确形式的无符号数
-                        this.writer.write("(数字, " + Numbers + " )\n");
-                        Numbers  = new StringBuilder();//清空数字存储
-                    }
-                    else
-                        isException = true; //判断为异常
+            else {
+                Others.append(NowWord);
+                if(Character.isDigit(NextWord)){
+                    //下一个是数字则清空
+                    this.writer.write("(其他, " + Others + " )\n");
+                    Others = new StringBuilder();
                 }
             }
+
+
+
         }
     }
 
