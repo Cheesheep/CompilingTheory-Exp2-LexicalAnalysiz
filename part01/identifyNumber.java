@@ -24,6 +24,7 @@ public class identifyNumber {
     boolean isException = false; //判断该串数字后面是否有异常
 
     private Solution solution = new Solution();
+    private int state = 1;
     private HashSet<Character> symbol = new HashSet<>();
 
     identifyNumber(){
@@ -44,29 +45,39 @@ public class identifyNumber {
 
             writer.write("\n");
         }
+        writer.close();
     }
     void parseToken() throws IOException {
         int size = line.length();
-        int state = 0;//自动机开始状态默认为0
         for (int i = 0; i < size; i++) {
             NowWord = line.charAt(i);
             NextWord = (i == size - 1 )? '@':line.charAt(i + 1);
             //先判断数字
-            if(Character.isDigit(NowWord) || Numbers.length() != 0){
-                state = solution.getNowState(state,NowWord);
+            if(isException){
                 Numbers.append(NowWord);
-                if(solution.getNowState(state,NextWord) == -1){//进入其他
-                    this.writer.write("(数字, " + Others + " )\n");
+                if(Character.isDigit(NextWord) || NextWord == '@'){
+                    this.writer.write("(异常, " + Numbers + " )\n");
+                    isException = false;
+                    Numbers = new StringBuilder();
+                    state = 1;
+                }
+            }
+            else if(Character.isDigit(NowWord) || Numbers.length() != 0){
+                Numbers.append(NowWord);
+                state = solution.getNowState(state,NextWord);
+                if(state == -1){//进入其他
+                    this.writer.write("(数字, " + Numbers + " )\n");
                     Numbers = new StringBuilder();//清空number
+                    state = 1;
                 }
                 else if(state == -2){ //进入异常
                     isException = true;
                 }
-
             }
             else {
                 Others.append(NowWord);
-                if(Character.isDigit(NextWord)){
+                //如果下一个是数字，或者是结尾，就可以输出其他字符了
+                if(Character.isDigit(NextWord) || NextWord == '@'){
                     //下一个是数字则清空
                     this.writer.write("(其他, " + Others + " )\n");
                     Others = new StringBuilder();
@@ -81,7 +92,7 @@ public class identifyNumber {
 
     public static void main(String[] args) throws Exception {
         identifyNumber identifyNumber = new identifyNumber();
-        identifyNumber.identify("part01/Test.txt","Output01.txt");
+        identifyNumber.identify("part01/Test.txt","part01/Output01.txt");
     }
 }
 
