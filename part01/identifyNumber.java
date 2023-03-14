@@ -23,7 +23,7 @@ public class identifyNumber {
     private char NowWord,NextWord;//获得每个句子中的每一个字符
     boolean isException = false; //判断该串数字后面是否有异常
 
-    private Solution solution = new Solution();
+    private Solution solution = new Solution(); //用于获取当前的自动机的状态
     private int state = 1;
     private HashSet<Character> symbol = new HashSet<>();
 
@@ -52,9 +52,10 @@ public class identifyNumber {
         for (int i = 0; i < size; i++) {
             NowWord = line.charAt(i);
             NextWord = (i == size - 1 )? '@':line.charAt(i + 1);
-            //先判断数字
+            //先判断是否进入异常判断
             if(isException){
                 Numbers.append(NowWord);
+                //如果这个下一个是数字或者是结尾，则作为异常的结束
                 if(Character.isDigit(NextWord) || NextWord == '@'){
                     this.writer.write("(异常, " + Numbers + " )\n");
                     isException = false;
@@ -62,6 +63,7 @@ public class identifyNumber {
                     state = 1;
                 }
             }
+            //没有异常的时候先识别数字，或者此时正在识别数字，也就是numbers长度不为0
             else if(Character.isDigit(NowWord) || Numbers.length() != 0){
                 Numbers.append(NowWord);
                 state = solution.getNowState(state,NextWord);
@@ -83,9 +85,6 @@ public class identifyNumber {
                     Others = new StringBuilder();
                 }
             }
-
-
-
         }
     }
 
