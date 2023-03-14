@@ -45,10 +45,25 @@ public class identifyNumber {
     }
     void parseToken() throws IOException {
         int size = line.length();
+        int state = 0;//自动机开始状态默认为0
         for (int i = 0; i < size; i++) {
             NowWord = line.charAt(i);
             NextWord = (i == size - 1 )? '@':line.charAt(i + 1);
             //先判断数字
+            state = solution.getNowState(state,NowWord);
+            if(state == -1){
+
+            }
+            else if(state == -2){ //没有进入err
+            }
+            else{
+                Numbers.append(NowWord);
+            }
+
+            /*
+            *
+            *
+            * */
             if(Character.isDigit(NowWord))
             {
                 Numbers.append(NowWord);

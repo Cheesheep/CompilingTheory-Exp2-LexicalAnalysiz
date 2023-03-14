@@ -32,6 +32,9 @@ public class Solution {
 
     // 确定性有限自动机的开始状态
     int state = 0;
+    public int getNowState(int state,Character ch){
+        return stateTable[state][col.get(getCol(ch))];
+    }
 
     public boolean isUnsignedNumber(String s) {
         for (int i = 0; i < s.length(); i++) {
