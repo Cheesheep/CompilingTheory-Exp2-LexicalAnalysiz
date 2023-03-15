@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /*
@@ -24,14 +25,13 @@ public class identifyUpperCase {
 
     private Solution solution = new Solution(); //用于获取当前的自动机的状态
     private int state = 1;
-    private HashSet<Character> symbol = new HashSet<>();
+    private final HashMap<Character,Character> encryption = new HashMap<>();
 
     identifyUpperCase(){
-        symbol.add('+');
-        symbol.add('-');
-        symbol.add('.');
-        symbol.add('E');
-        symbol.add('e');
+        encryption.put('k','.');
+        encryption.put('L','E');
+        encryption.put('M','+');
+        encryption.put('N','-');
     }
     void identify(String input,String output) throws Exception{
         BufferedReader reader = new BufferedReader( new FileReader(input));

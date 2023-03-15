@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /*
@@ -25,15 +26,7 @@ public class identifyNumber {
 
     private Solution solution = new Solution(); //用于获取当前的自动机的状态
     private int state = 1;
-    private HashSet<Character> symbol = new HashSet<>();
 
-    identifyNumber(){
-        symbol.add('+');
-        symbol.add('-');
-        symbol.add('.');
-        symbol.add('E');
-        symbol.add('e');
-    }
     void identify(String input,String output) throws Exception{
         BufferedReader reader = new BufferedReader( new FileReader(input));
         this.writer = new FileWriter(output);
@@ -93,6 +86,7 @@ public class identifyNumber {
     public static void main(String[] args) throws Exception {
         identifyNumber identifyNumber = new identifyNumber();
         identifyNumber.identify("part01/Test.txt","part01/Output01.txt");
+        System.out.println("识别成功！");
     }
 }
 
