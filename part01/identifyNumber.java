@@ -66,6 +66,7 @@ public class identifyNumber {
             //没有异常的时候先识别数字，或者此时正在识别数字，也就是numbers长度不为0
             else if(Character.isDigit(NowWord) || Numbers.length() != 0){
                 Numbers.append(NowWord);
+                //TODO 获取下一个字符自动机会去到的状态
                 state = solution.getNowState(state,NextWord);
                 if(state == -1){//进入其他
                     this.writer.write("(数字, " + Numbers + " )\n");
