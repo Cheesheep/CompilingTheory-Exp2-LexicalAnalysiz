@@ -30,12 +30,15 @@ public class Solution {
     Integer[] end = {1, 2, 6, 7};
     List<Integer> legalState = Arrays.asList(end);
 
-    // 确定性有限自动机的开始状态
+    // 确定性有限自动机的开始状态,默认为0
     int state = 0;
+    //获取某个时刻处于的状态
     public int getNowState(int state,Character ch){
         return stateTable[state][col.get(getCol(ch))];
     }
 
+    //判断整一个单词是否是无符号数，通过for循环逐个判断自动机的状态，
+    // 若判断到最后都没有出现特殊情况，则为合法的无符号数
     public boolean isUnsignedNumber(String s) {
         for (int i = 0; i < s.length(); i++) {
             state = stateTable[state][col.get(getCol(s.charAt(i)))];
