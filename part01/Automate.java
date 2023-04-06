@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Solution {
+public class Automate {
     // 状态转换表
     int[][] stateTable = {
             {-1, 1, 3, -1, -1, 0},
@@ -82,9 +82,8 @@ public class Solution {
                 ".38E-4",".3e-4c","3.E45","38.e4","3.E+45","38.e+4",
                 "3.E-45","38.e-4"
         };
-
         for (String str : strings) {
-            Solution solution = new Solution();
+            Automate solution = new Automate();
             if (solution.isUnsignedNumber(str)) {
                 System.out.println(str + " Yes");
             } else {
