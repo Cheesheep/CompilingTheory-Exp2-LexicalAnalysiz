@@ -1,5 +1,6 @@
 package part03_test;
 
+import java.io.FileWriter;
 import java.util.*;
 
 
@@ -15,19 +16,21 @@ public class NFA {
 	int startState;
 	int endState;
 	StateCode stateCode;
-	static char epsilon = 12345;
+	static char epsilon = 'ε';
 	
 	// (S, a) -> A
 	// (S, a) -> B
 	// => (S,a) -> {A, B}
 	HashMap<Pair, ArrayList<Integer>> transferMat = new HashMap<>();
+	//记录所有产生的状态如A、B等
 	ArrayList<Integer> stateList = new ArrayList<>();
+	//转移信息如a，b等小写字母或者数字
 	ArrayList<Character> msgList = new ArrayList<>();
 	
 	private void addEdge(int srcState, int dstState, char msg) {
 		Pair stateMsg = new Pair(srcState, msg);
 		ArrayList<Integer> dstStateList = new ArrayList<>();
-		if (transferMat.containsKey(stateMsg)) {
+		if (transferMat.containsKey(stateMsg)) {//该状态已经有一个指向的状态，例如(S , a) -> A
 			dstStateList = transferMat.get(stateMsg);
 		}
 		dstStateList.add(dstState);
@@ -49,12 +52,12 @@ public class NFA {
 		this.msgList.addAll(msgList);
 		return this.msgList;
 	}
-	
+	//构造函数
 	public NFA(StateCode stateCode) {
 		this.stateCode = stateCode;
 	}
 	
-	//factory method: 
+	//第二题的的输出，根据输入获得所有输出:
 	public NFA loadFromFunExp(String fileName) {
 		
 		// TODO:
@@ -74,7 +77,7 @@ public class NFA {
 		int i = 0;
 		int size = msgList.size();
 		for(; i<size; ++i) {
-			char cs = (char) msgList.get(i);
+			char cs = msgList.get(i);
 			if (i == 0) {
 				tmp += cs;
 				continue;
@@ -84,14 +87,21 @@ public class NFA {
 		return tmp;
 	}
 	private String getTransferList() {
+		String tmp = "";
 		//output: f(S,a)=A, f(A,b)=B；
-		return "";
+		for (Map.Entry<Pair, ArrayList<Integer>> entry : transferMat.entrySet()) {
+			Pair key = entry.getKey();
+			ArrayList<Integer> value = entry.getValue();
+			tmp += "f" + key.toString() + "=" + value;
+		}
+		return tmp;
 	}
-	public void write(String fileName) {
+	//根据给出的转移式输出到文件上
+	public String generateFile() {
 		
-		// K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
+		//output： K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
 		String tmp = "K= {";
-		tmp += stateCode.getCharStateList(); // S，A，B
+		tmp += stateCode.getCharStateList(stateList); // S，A，B
 		tmp += "}; ";
 		
 		//Σ={a,b}
@@ -111,7 +121,7 @@ public class NFA {
 		tmp += stateCode.queryCharState(this.endState);
 		tmp += "}";
 		
-		//TODO: write tmp into the file with the fileName
+		return tmp;
 	}
 	
 	
@@ -127,40 +137,40 @@ public class NFA {
 		//operatorQueue: [( | ]  lookAhead=)
 		//pop | call NFA(b).or(NFA(aa))
 		
-		Stack<NFA> operandQue = new Stack<NFA>();
-		Stack<NFA> 
-		
-		int i = 0;
+		Stack<NFA> operandQue = new Stack<>();
+		Stack<NFA> operatorQue = new Stack<>();
+		//将正则表达式转换成后缀表达式
+		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
+
 		int size = regularExp.length();
-		for(; i<size; ++i) {
+		for(int i=0; i<size; ++i) {
 			char x = regularExp.charAt(i);
 			if (Character.isAlphabetic(x)) {
-				NFA 
 			}
 		}
-		
+		return new NFA(new StateCode());
 	}
 	
 	private NFA create(char regularExp) {
 		//a
 		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId(null);
-		nfa.endState = this.stateCode.getNewStateId(null);
+		nfa.startState = this.stateCode.getNewStateId();
+		nfa.endState = this.stateCode.getNewStateId();
 		nfa.addEdge(nfa.startState, nfa.endState, regularExp);
 		return nfa;
 	}
 	private NFA createEpsilon() {
 		//epsilon
 		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId(null);
+		nfa.startState = this.stateCode.getNewStateId();
 		nfa.endState = nfa.startState;
 		return nfa;
 	}
 	private NFA createEmpty() {
 		//empty regular
 		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId(null);
-		nfa.endState = this.stateCode.getNewStateId(null);
+		nfa.startState = this.stateCode.getNewStateId();
+		nfa.endState = this.stateCode.getNewStateId();
 		return nfa;
 	}
 	
@@ -183,8 +193,8 @@ public class NFA {
 		NFA nfa = new NFA(this.stateCode);
 		
 		//create new start/end state
-		nfa.startState = this.stateCode.getNewStateId(null);
-		nfa.endState = this.stateCode.getNewStateId(null);
+		nfa.startState = this.stateCode.getNewStateId();
+		nfa.endState = this.stateCode.getNewStateId();
 		
 		nfa.transferMat = this.collectTransferMat(other.transferMat);
 		nfa.stateList = this.collectStateList(other.stateList);
