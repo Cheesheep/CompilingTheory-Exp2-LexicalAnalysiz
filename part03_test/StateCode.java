@@ -21,26 +21,19 @@ public class StateCode {
 
             return (char)(state + seqId) + "";
         }
-        else {
+        else {//如果超过了26个字母，则输出两个打印
             return ((char)(state + (seqId - 25)) + "").repeat(2);
         }
     }
     //返回所有状态拼接的字符串
     public String getCharStateList(ArrayList<Integer> stateList) {
         String tmp = "";
-        for(Integer state : stateList){
-            tmp += queryCharState(state) + " ,";
+        for(int i = 0;i < stateList.size();i++){
+            tmp += queryCharState(stateList.get(i));
+            if(i != stateList.size() - 1)
+                tmp += ", ";
         }
         return tmp;
     }
-
-    public static void main(String[] args) {
-        StateCode stateCode = new StateCode();
-        for (int i = 0; i < 29; i++) {
-            System.out.println(stateCode.queryCharState(stateCode.seq));
-
-        }
-    }
-
 
 }

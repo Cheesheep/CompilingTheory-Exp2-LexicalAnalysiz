@@ -7,6 +7,7 @@ package part03_test;
  * @date: 2023/04/07 16:41
  * @Company: Copyright© [日期] by [作者或个人]
  **/
+import javax.swing.plaf.nimbus.State;
 import java.util.*;
 
 public class ReversePolish {
@@ -69,17 +70,14 @@ public class ReversePolish {
             char nowWord = infixArr[i];
             char nextWord = (i == infix.length() - 1) ?'@':infixArr[i+1];
             ex_infix += nowWord;
-            if(nowWord == '*' || nowWord == ')' || isDigitOrAlpha(nowWord)){
-                if(isDigitOrAlpha(nextWord)
+            if(nowWord == '*' || nowWord == ')' || Character.isLetterOrDigit(nowWord)){
+                if(Character.isLetterOrDigit(nextWord)
                         ||nextWord == '(')
                     ex_infix += '-';
             }
         }
-        System.out.println(ex_infix);
+        System.out.println("addConnect:\n"+ex_infix);
         return ex_infix;
-    }
-    private static boolean isDigitOrAlpha(char c){
-        return Character.isDigit(c) || Character.isAlphabetic(c);
     }
 
     public static void main(String[] args) {
@@ -87,11 +85,16 @@ public class ReversePolish {
                 "a*b(b|(ab)*c)ca",
                 "a*b(b|(ab)*c)|ca",
                 "a*b(b|(ab)*c|ca)",
-                        "a*bc|bb",
+                        "a*b",
                 "((0|1)(010|11)*) | ((0|101)*)*"
         };
-        String postfix = infixToPostfix(infix[5]);
-        System.out.println(postfix);  // aa-b|*b-a-
+        String _infix = infix[0];
+        String postfix = infixToPostfix(_infix);
+        System.out.println("ReversePolish:\n"+postfix);  // aa-b|*b-a-
+        StateCode st = new StateCode();
+        NFA nfa = new NFA(st);
+        nfa = nfa.loadFromRegularExp(_infix);
+        System.out.println("NFA STATES:\n" + nfa.generateFile());
     }
 }
 

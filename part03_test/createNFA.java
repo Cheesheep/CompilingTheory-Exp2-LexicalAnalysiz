@@ -23,12 +23,12 @@ public class createNFA {
     void getNFA() throws IOException {
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
-            nfa.loadFromRegularExp(line);//生成对应的NFA
-            stateCode = new StateCode();//重置，输出新的NFA
-            nfa = new NFA(stateCode);
+            nfa = nfa.loadFromRegularExp(line);//生成对应的NFA
             //生成NFA状态机后输出
             fw.write("第 " + count + " 个NFA状态机：\n");
             fw.write(nfa.generateFile() + "\n ----------------");
+            stateCode = new StateCode();//重置，输出新的NFA
+            nfa = new NFA(stateCode);
             fw.close();
         }
         fw.close();

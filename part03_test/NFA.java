@@ -15,12 +15,12 @@ public class NFA {
 	 * */
 	int startState;
 	int endState;
-	StateCode stateCode;
-	static char epsilon = 'ε';
+	char epsilon = 'ε';
 	
 	// (S, a) -> A
 	// (S, a) -> B
 	// => (S,a) -> {A, B}
+	StateCode stateCode;
 	HashMap<Pair, ArrayList<Integer>> transferMat = new HashMap<>();
 	//记录所有产生的状态如A、B等
 	ArrayList<Integer> stateList = new ArrayList<>();
@@ -36,17 +36,18 @@ public class NFA {
 		dstStateList.add(dstState);
 		transferMat.put(stateMsg, dstStateList);
 	}
-	private HashMap<Pair, ArrayList<Integer>> collectTransferMat(HashMap<Pair, ArrayList<Integer>> other) {
-		Set<Pair> stateMsgKeys = other.keySet();
+	//将另一个NFA当中的信息全部拷贝加到当前的NFA上
+	private HashMap<Pair, ArrayList<Integer>> collectTransferMat(HashMap<Pair, ArrayList<Integer>> transferMat) {
+		Set<Pair> stateMsgKeys = transferMat.keySet();
 		for(Pair stateMsg: stateMsgKeys) {
-			ArrayList<Integer> stateList = other.get(stateMsg);
-			transferMat.put(stateMsg, stateList);
+			ArrayList<Integer> stateList = transferMat.get(stateMsg);
+			this.transferMat.put(stateMsg, stateList);
 		}
-		return transferMat;
+		return this.transferMat;
 	}
 	private ArrayList<Integer> collectStateList(ArrayList<Integer> stateList) {
 		this.stateList.addAll(stateList);
-		return stateList;
+		return this.stateList;
 	}
 	private ArrayList<Character> collectMsgList(ArrayList<Character> msgList) {
 		this.msgList.addAll(msgList);
@@ -60,17 +61,19 @@ public class NFA {
 	//第二题的的输出，根据输入获得所有输出:
 	public NFA loadFromFunExp(String fileName) {
 		
-		// TODO:
-		//input f(S,a)=A, f(A,b)=B, {B}
-		//build the a NFA object including
-		// setting the 
-		// startState = 'S'
-		// endState = B			//{B}
-		// and build the transferMat
-		// for example, putting f(S,a)=A, f(A,b)=B
-		// into the transferMat
-		// transferMat.put(new Pair()
+		// TODO:  读入状态转换表，然后输出NFA
 		return null;
+	}
+	public String getStateList() {
+		String tmp = "";
+		Collections.sort(stateList);
+		for(int i = 0;i < stateList.size();i++){
+			//需要先将整型转换成数字，表达状态
+			tmp += stateCode.queryCharState(stateList.get(i));
+			if(i != stateList.size() - 1)
+				tmp += ", ";
+		}
+		return tmp;
 	}
 	private String getMsgList() {
 		String tmp = "";
@@ -92,98 +95,31 @@ public class NFA {
 		for (Map.Entry<Pair, ArrayList<Integer>> entry : transferMat.entrySet()) {
 			Pair key = entry.getKey();
 			ArrayList<Integer> value = entry.getValue();
-			tmp += "f" + key.toString() + "=" + value;
+			tmp += "f" + key.toString() + "= {" + stateCode.getCharStateList(value) + "}, ";
 		}
 		return tmp;
 	}
-	//根据给出的转移式输出到文件上
-	public String generateFile() {
-		
-		//output： K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
-		String tmp = "K= {";
-		tmp += stateCode.getCharStateList(stateList); // S，A，B
-		tmp += "}; ";
-		
-		//Σ={a,b}
-		tmp += "Σ={";
-		tmp += this.getMsgList();
-		tmp += "}; ";
-		
-		//f(S,a)=A, f(A,b)=B；
-		tmp += this.getTransferList();
-		
-		//S；
-		tmp += stateCode.queryCharState(this.startState);
-		tmp += "; ";
-		
-		//Z={B}
-		tmp += "Z={";
-		tmp += stateCode.queryCharState(this.endState);
-		tmp += "}";
-		
-		return tmp;
-	}
-	
-	
-	public NFA loadFromRegularExp(String regularExp) {
-		//a(b|aa)*b
-		//a o (b + a o a)^* o b
-		//  ) | o * ( 
-		//operandQueue: [abaa]
-		//operatorQueue: [( | o ]  lookAhead=)
-		// pop operatorQueue o, pop aa from operandQueue
-		// NFA(a) o NFA(a) --> NFA, push NFA into operandQueue
-		// operandQueue[a b NFA(aa) ]
-		//operatorQueue: [( | ]  lookAhead=)
-		//pop | call NFA(b).or(NFA(aa))
-		
-		Stack<NFA> operandQue = new Stack<>();
-		Stack<NFA> operatorQue = new Stack<>();
-		//将正则表达式转换成后缀表达式
-		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
 
-		int size = regularExp.length();
-		for(int i=0; i<size; ++i) {
-			char x = regularExp.charAt(i);
-			if (Character.isAlphabetic(x)) {
-			}
-		}
-		return new NFA(new StateCode());
-	}
 	
 	private NFA create(char regularExp) {
 		//a
 		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId();
-		nfa.endState = this.stateCode.getNewStateId();
+		generateNewState(nfa);
+		nfa.msgList.add(regularExp);
 		nfa.addEdge(nfa.startState, nfa.endState, regularExp);
-		return nfa;
-	}
-	private NFA createEpsilon() {
-		//epsilon
-		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId();
-		nfa.endState = nfa.startState;
-		return nfa;
-	}
-	private NFA createEmpty() {
-		//empty regular
-		NFA nfa = new NFA(this.stateCode);
-		nfa.startState = this.stateCode.getNewStateId();
-		nfa.endState = this.stateCode.getNewStateId();
 		return nfa;
 	}
 	
 	private NFA connect(NFA other) {
-		//r1 o r2
-		//this o other
+		//r1 o r2 连接符：‘-’
+		//r1.connect(r2)
 		NFA nfa = new NFA(this.stateCode);
 		nfa.startState = this.startState;
 		nfa.endState = other.endState;
 		nfa.transferMat = this.collectTransferMat(other.transferMat);
 		nfa.stateList = this.collectStateList(other.stateList);
 		nfa.msgList = this.collectMsgList(other.msgList);
-		nfa.addEdge(this.endState, other.startState, NFA.epsilon);
+		nfa.addEdge(this.endState, other.startState, epsilon);
 		return nfa;
 	}
 	
@@ -191,22 +127,105 @@ public class NFA {
 		//r1 | r2
 		//return NFA(r1) union NFA(r2)
 		NFA nfa = new NFA(this.stateCode);
-		
 		//create new start/end state
-		nfa.startState = this.stateCode.getNewStateId();
-		nfa.endState = this.stateCode.getNewStateId();
-		
-		nfa.transferMat = this.collectTransferMat(other.transferMat);
-		nfa.stateList = this.collectStateList(other.stateList);
-		nfa.msgList = this.collectMsgList(other.msgList);
+		//分支的起点和终点
+		generateNewState(nfa);
+		//将新的加进去
+		nfa.collectTransferMat(this.collectTransferMat(other.transferMat));
+		nfa.collectStateList(this.collectStateList(other.stateList));
+		nfa.collectMsgList(this.collectMsgList(other.msgList));
 		
 		//create new epsilon edge
-		nfa.addEdge(nfa.startState, this.startState, NFA.epsilon);
-		nfa.addEdge(nfa.startState, other.startState, NFA.epsilon);
-		nfa.addEdge(other.endState, nfa.endState, NFA.epsilon);
-		nfa.addEdge(this.endState, nfa.endState, NFA.epsilon);
+		nfa.addEdge(nfa.startState, this.startState, epsilon);
+		nfa.addEdge(nfa.startState, other.startState, epsilon);
+		nfa.addEdge(other.endState, nfa.endState, epsilon);
+		nfa.addEdge(this.endState, nfa.endState, epsilon);
 		
 		return nfa;
 	}
-	
+	private NFA closure(){
+		// a* 闭包操作
+		NFA nfa = new NFA(this.stateCode);
+		//create new start / end state
+		generateNewState(nfa);
+		nfa.collectTransferMat(this.transferMat);
+		nfa.collectStateList(this.stateList);
+		nfa.collectMsgList(this.msgList);
+		//增加epsilon边缘
+		nfa.addEdge(this.endState,this.startState,epsilon);//回溯
+		nfa.addEdge(nfa.startState,this.startState,epsilon);
+		nfa.addEdge(this.endState,nfa.endState,epsilon);
+		nfa.addEdge(nfa.startState, nfa.endState,epsilon);//允许为空直接跳跃
+
+		return nfa;
+	}
+	private void generateNewState(NFA nfa){
+		nfa.startState = this.stateCode.getNewStateId();
+		nfa.endState = this.stateCode.getNewStateId();
+		nfa.stateList.add(nfa.startState); //新增状态列表
+		nfa.stateList.add(nfa.endState);
+	}
+	//根据给出的转移式输出到所有NFA相关的信息
+	public String generateFile() {
+		//output： K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
+		String tmp = "K= {";
+		tmp += this.getStateList(); // S，A，B
+		tmp += "}; ";
+		//Σ={a,b}
+		tmp += "Σ={";
+		tmp += this.getMsgList();
+		tmp += "}; \n";
+		//f(S,a)=A, f(A,b)=B；
+		tmp += this.getTransferList() + "; \n";
+		//S；
+		tmp += stateCode.queryCharState(this.startState);
+		tmp += "; ";
+		//Z={B}
+		tmp += "Z={";
+		tmp += stateCode.queryCharState(this.endState);
+		tmp += "}";
+		return tmp;
+	}
+
+
+	public NFA loadFromRegularExp(String regularExp) {
+		//a(b|aa)*b
+		//a o (b + a o a)^* o b
+		//  ) | o * (
+		Stack<NFA> nfaStack = new Stack<>();
+		//将正则表达式转换成后缀表达式
+		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
+
+		int size = postfix_RE.length();
+		for(int i=0; i<size; ++i) {
+			char token = postfix_RE.charAt(i);
+			if (Character.isLetterOrDigit(token)) {
+				//是Unicode则生成一个NFA并且入栈
+				nfaStack.push(create(token));
+			}else {
+				//是操作符，则出栈并且开始运算
+				switch (token){
+					case '*':
+					{
+						NFA tmp = nfaStack.pop();//将栈顶取出一个元素
+						nfaStack.push(tmp.closure());//闭包运算后再放回去
+					};break;
+					case '-':
+					{
+						NFA n2 = nfaStack.pop();
+						NFA n1 = nfaStack.pop();
+						nfaStack.push(n1.connect(n2));
+					};break;
+					case '|':
+					{
+						NFA n2 = nfaStack.pop();
+						NFA n1 = nfaStack.pop();
+						nfaStack.push(n1.or(n2));
+					};break;
+				}
+			}
+		}
+		return nfaStack.peek();
+	}
+
 }

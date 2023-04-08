@@ -28,6 +28,7 @@ public class Pair {
     //for debug
     public String toString() {
         // (S, a)
-        return "(" + this.state + ", " + this.msg + ")";
+        StateCode st = new StateCode();
+        return "(" + st.queryCharState(this.state) + ", " + this.msg + ")";
     }
 }
