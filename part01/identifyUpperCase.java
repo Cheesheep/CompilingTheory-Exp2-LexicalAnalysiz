@@ -4,103 +4,66 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /*
-* 1.	输入：一个文本文件（源代码文件）
-输出：将源代码中的无符号数识别出来并输出到另一个文件中
-示例：如果输入是“123*abc+def/99.2+9.9E+c”，
-* 那么输出是：（数字, 123），（其它，*abc+def/），（数字，99.2），（其它，+），（异常，9.9E+c）
-说明：其它是非数字打头的字符串；异常是数字打头，但最后却是不符合定义的无符号数。
+2.	假设：用字符“ABCDEFGHIJK”（大写）分别表示数字0..9和.、E、+、-，那么，字符串“BCLD”表示数字“12E3”=12000；
+输入：一个文本文件
+输出：将隐藏在文本文件中的有效无符号数识别出来。
+示例：如果输入是“BCD*abc+def/JJKC+JKJL+c”，那么输出是：（数字, 123）、（数字，99.2），无效（异常）的无符号数不输出
+
 * */
 
 public class identifyUpperCase {
     String line = null;
     FileWriter writer;
-    private StringBuilder Numbers = new StringBuilder();
-    private StringBuilder Others = new StringBuilder();
-    private char NowWord,NextWord;//获得每个句子中的每一个字符
-    boolean isException = false; //判断该串数字后面是否有异常
-
-    private Solution solution = new Solution(); //用于获取当前的自动机的状态
-    private int state = 1;
-    private HashSet<Character> symbol = new HashSet<>();
+    //解密对应表
+    private final HashMap<Character,Character> encryption = new HashMap<>();
 
     identifyUpperCase(){
-        symbol.add('+');
-        symbol.add('-');
-        symbol.add('.');
-        symbol.add('E');
-        symbol.add('e');
+        encryption.put('K','.');
+        encryption.put('L','E');
+        encryption.put('M','+');
+        encryption.put('N','-');
     }
-    void identify(String input,String output) throws Exception{
+    void decode(String input,String output) throws Exception{
         BufferedReader reader = new BufferedReader( new FileReader(input));
         this.writer = new FileWriter(output);
         line = reader.readLine();
+        //TODO 识别每一行的内容
         for (int count=1;line != null; line = reader.readLine(),count++) {
-            writer.write("------第 " + count + " 行-----\n");
-            //TODO 识别每一行的内容
-            parseToken();
-
-            writer.write("\n");
+            //TODO 将line里面的大写字符全部解密
+            upperToInteger();
         }
         writer.close();
     }
-    void parseToken() throws IOException {
-        int size = line.length();
-        for (int i = 0; i < size; i++) {
-            upperToInteger(i);
 
-            //先判断是否进入异常判断
-            if(isException){
-                Numbers.append(NowWord);
-                //如果这个下一个是数字或者是结尾，则作为异常的结束
-                if(Character.isDigit(NextWord) || NextWord == '@'){
-                    this.writer.write("(异常, " + Numbers + " )\n");
-                    isException = false;
-                    Numbers = new StringBuilder();
-                    state = 1;
-                }
-            }
-            //没有异常的时候先识别数字，或者此时正在识别数字，也就是numbers长度不为0
-            else if(Character.isDigit(NowWord) || Numbers.length() != 0){
-                Numbers.append(NowWord);
-                //TODO 获取下一个字符自动机会去到的状态
-                state = solution.getNowState(state,NextWord);
-                if(state == -1){//进入其他
-                    this.writer.write("(数字, " + Numbers + " )\n");
-                    Numbers = new StringBuilder();//清空number
-                    state = 1;
-                }
-                else if(state == -2){ //进入异常
-                    isException = true;
-                }
-            }
-            else {
-                Others.append(NowWord);
-                //如果下一个是数字，或者是结尾，就可以输出其他字符了
-                if(Character.isDigit(NextWord) || NextWord == '@'){
-                    //下一个是数字则清空
-                    this.writer.write("(其他, " + Others + " )\n");
-                    Others = new StringBuilder();
-                }
+    private void upperToInteger() throws IOException {
+        char[] arr = line.toCharArray();//先转换成字符数组方便修改
+
+        for (int i = 0; i < line.length(); i++) {
+            if(Character.isUpperCase(line.charAt(i))){
+                if(arr[i] <= 'J')
+                    arr[i] = Integer.toString(arr[i] - 'A').charAt(0);
+                else
+                    arr[i] = encryption.get(line.charAt(i));
             }
         }
-    }
-    private void upperToInteger(int index){
-        char word = line.charAt(index);
-        if(Character.isUpperCase(word)){
-
-        }
-        NowWord = line.charAt(index);
-        NextWord = (index == line.length() - 1 )? '@':line.charAt(index + 1);
-
+        writer.write(arr);
+        writer.write('\n');
     }
 
 
     public static void main(String[] args) throws Exception {
+        //先进行解码
         identifyUpperCase identifyUpperCase = new identifyUpperCase();
-        identifyUpperCase.identify("part01/Test02.txt","part01/Output02.txt");
+        identifyUpperCase.decode("part01/Test02.txt","part01/Decode.txt");
+        //再将解码后的文件正常放入无符号数识别。
+        identifyNumber identifyNumber = new identifyNumber();
+        identifyNumber.identify("part01/Decode.txt","part01/Output02.txt");
+        System.out.println("识别成功！");
     }
 }
 
