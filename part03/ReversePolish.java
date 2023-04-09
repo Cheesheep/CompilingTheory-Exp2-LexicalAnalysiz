@@ -86,7 +86,7 @@ public class ReversePolish {
                         "a*b",
                 "((0|1)(010|11)*) | ((0|101)*)*"
         };
-        String _infix = infix[0];
+        String _infix = infix[4];
         System.out.println("ReversePolish:\n"+infixToPostfix(_infix));  // aa-b|*b-a-
         //测试生成一个NFA
         StateCode st = new StateCode();

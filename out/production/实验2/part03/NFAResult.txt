@@ -1,65 +1,59 @@
 the 0 NFA: 
 Reverse to PostFix: abaa-|*b--
 K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N}; Σ={a, b, a, a, b}; 
-f(K, ε)= {I}, f(H, ε)= {J}, f(I, ε)= {E}, f(L, ε)= {M}, f(E, a)= {F}, f(G, a)= {H}, 
-f(J, ε)= {I}, f(D, ε)= {J}, f(M, b)= {N}, f(A, a)= {B}, f(F, ε)= {G}, f(J, ε)= {L}, 
-f(I, ε)= {C}, f(K, ε)= {L}, f(C, b)= {D}, f(B, ε)= {K}, ; 
+f(L, ε)= {M}, f(A, a)= {B}, f(C, b)= {D}, f(E, a)= {F}, f(G, a)= {H}, f(M, b)= {N}, 
+f(B, ε)= {K}, f(D, ε)= {J}, f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, f(J, ε)= {I, L}, 
+f(K, ε)= {I, L}, ; 
 A; Z={N}
  ----------------
 the 1 NFA: 
 Reverse to PostFix: a*b-
 K= {A, B, C, D, E, F}; Σ={a, b}; 
-f(E, b)= {F}, f(C, ε)= {A}, f(D, ε)= {E}, f(C, ε)= {D}, f(B, ε)= {A}, f(A, a)= {B}, 
-f(B, ε)= {D}, ; 
+f(A, a)= {B}, f(B, ε)= {A, D}, f(E, b)= {F}, f(C, ε)= {A, D}, f(D, ε)= {E}, ; 
 C; Z={F}
  ----------------
 the 2 NFA: 
 Reverse to PostFix: 0100-|-
 K= {A, B, C, D, E, F, G, H, I, J}; Σ={0, 1, 0, 0}; 
-f(E, 0)= {F}, f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C}, f(I, ε)= {E}, f(G, 0)= {H}, 
-f(B, ε)= {I}, f(A, 0)= {B}, f(D, ε)= {J}, f(C, 1)= {D}, ; 
+f(A, 0)= {B}, f(C, 1)= {D}, f(E, 0)= {F}, f(G, 0)= {H}, f(B, ε)= {I}, f(D, ε)= {J}, 
+f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, ; 
 A; Z={J}
  ----------------
 the 3 NFA: 
 Reverse to PostFix: a*bbab-*c-|ca----
 K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V}; Σ={a, b, b, a, b, c, c, a}; 
-f(J, ε)= {K}, f(G, b)= {H}, f(M, ε)= {N}, f(B, ε)= {D}, f(M, ε)= {I}, f(L, ε)= {I}, 
-f(Q, ε)= {M}, f(K, b)= {L}, f(T, ε)= {U}, f(R, ε)= {S}, f(I, a)= {J}, f(L, ε)= {N}, 
-f(O, c)= {P}, f(N, ε)= {O}, f(E, b)= {F}, f(H, ε)= {R}, f(P, ε)= {R}, f(B, ε)= {A}, 
-f(D, ε)= {E}, f(C, ε)= {A}, f(A, a)= {B}, f(C, ε)= {D}, f(U, a)= {V}, f(Q, ε)= {G}, 
-f(S, c)= {T}, f(F, ε)= {Q}, ; 
+f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
+f(E, b)= {F}, f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(K, b)= {L}, 
+f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, f(C, ε)= {A, D}, f(D, ε)= {E}, 
+f(F, ε)= {Q}, f(H, ε)= {R}, f(J, ε)= {K}, ; 
 C; Z={V}
  ----------------
 the 4 NFA: 
 Reverse to PostFix: a*bbab-*c-|--ca-|
 K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
-f(A, a)= {B}, f(H, ε)= {R}, f(E, b)= {F}, f(S, c)= {T}, f(Q, ε)= {M}, f(W, ε)= {C}, 
-f(N, ε)= {O}, f(W, ε)= {S}, f(M, ε)= {I}, f(B, ε)= {A}, f(C, ε)= {A}, f(V, ε)= {X}, 
-f(Q, ε)= {G}, f(L, ε)= {N}, f(G, b)= {H}, f(D, ε)= {E}, f(F, ε)= {Q}, f(I, a)= {J}, 
-f(J, ε)= {K}, f(T, ε)= {U}, f(P, ε)= {R}, f(R, ε)= {X}, f(M, ε)= {N}, f(K, b)= {L}, 
-f(B, ε)= {D}, f(L, ε)= {I}, f(O, c)= {P}, f(C, ε)= {D}, f(U, a)= {V}, ; 
+f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
+f(E, b)= {F}, f(R, ε)= {X}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(V, ε)= {X}, 
+f(W, ε)= {C, S}, f(K, b)= {L}, f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, 
+f(C, ε)= {A, D}, f(D, ε)= {E}, f(F, ε)= {Q}, f(H, ε)= {R}, f(J, ε)= {K}, ; 
 W; Z={X}
  ----------------
 the 5 NFA: 
 Reverse to PostFix: a*bbab-*c-ca-||--
 K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
-f(P, ε)= {V}, f(E, b)= {F}, f(D, ε)= {E}, f(U, ε)= {M}, f(C, ε)= {A}, f(N, ε)= {O}, 
-f(W, ε)= {G}, f(O, c)= {P}, f(L, ε)= {N}, f(W, ε)= {U}, f(L, ε)= {I}, f(J, ε)= {K}, 
-f(M, ε)= {N}, f(U, ε)= {Q}, f(B, ε)= {A}, f(S, a)= {T}, f(B, ε)= {D}, f(C, ε)= {D}, 
-f(T, ε)= {V}, f(A, a)= {B}, f(I, a)= {J}, f(F, ε)= {W}, f(M, ε)= {I}, f(V, ε)= {X}, 
-f(G, b)= {H}, f(Q, c)= {R}, f(K, b)= {L}, f(R, ε)= {S}, f(H, ε)= {X}, ; 
+f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {V}, f(E, b)= {F}, 
+f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {V}, f(I, a)= {J}, f(U, ε)= {M, Q}, f(V, ε)= {X}, 
+f(W, ε)= {G, U}, f(K, b)= {L}, f(O, c)= {P}, f(Q, c)= {R}, f(S, a)= {T}, f(B, ε)= {A, D}, 
+f(C, ε)= {A, D}, f(D, ε)= {E}, f(F, ε)= {W}, f(H, ε)= {X}, f(J, ε)= {K}, ; 
 C; Z={X}
  ----------------
 the 6 NFA: 
 Reverse to PostFix: 01|010--11-|*-0101--|**|
 K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ}; Σ={0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1}; 
-f(V, ε)= {DD}, f(DD, ε)= {FF}, f(D, ε)= {F}, f(S, ε)= {Q}, f(A, 0)= {B}, f(H, ε)= {I}, 
-f(Y, 0)= {Z}, f(FF, ε)= {EE}, f(I, 1)= {J}, f(J, ε)= {K}, f(O, 1)= {P}, f(E, ε)= {A}, 
-f(HH, ε)= {JJ}, f(E, ε)= {C}, f(Q, ε)= {M}, f(F, ε)= {S}, f(P, ε)= {R}, f(M, 1)= {N}, 
-f(U, 0)= {V}, f(W, 1)= {X}, f(FF, ε)= {HH}, f(II, ε)= {E}, f(X, ε)= {Y}, f(N, ε)= {O}, 
-f(BB, ε)= {DD}, f(Q, ε)= {G}, f(C, 1)= {D}, f(B, ε)= {F}, f(G, 0)= {H}, f(Z, ε)= {AA}, 
-f(II, ε)= {GG}, f(R, ε)= {T}, f(S, ε)= {T}, f(GG, ε)= {EE}, f(GG, ε)= {HH}, f(CC, ε)= {W}, 
-f(DD, ε)= {CC}, f(EE, ε)= {CC}, f(EE, ε)= {FF}, f(L, ε)= {R}, f(K, 0)= {L}, f(CC, ε)= {U}, 
-f(AA, 1)= {BB}, f(R, ε)= {Q}, f(T, ε)= {JJ}, ; 
+f(L, ε)= {R}, f(N, ε)= {O}, f(P, ε)= {R}, f(U, 0)= {V}, f(Q, ε)= {G, M}, f(R, ε)= {Q, T}, 
+f(S, ε)= {Q, T}, f(W, 1)= {X}, f(Y, 0)= {Z}, f(T, ε)= {JJ}, f(V, ε)= {DD}, f(AA, 1)= {BB}, 
+f(X, ε)= {Y}, f(Z, ε)= {AA}, f(BB, ε)= {DD}, f(CC, ε)= {U, W}, f(DD, ε)= {CC, FF}, f(EE, ε)= {CC, FF}, 
+f(FF, ε)= {EE, HH}, f(GG, ε)= {EE, HH}, f(HH, ε)= {JJ}, f(II, ε)= {E, GG}, f(A, 0)= {B}, f(C, 1)= {D}, 
+f(B, ε)= {F}, f(G, 0)= {H}, f(D, ε)= {F}, f(E, ε)= {A, C}, f(I, 1)= {J}, f(K, 0)= {L}, 
+f(F, ε)= {S}, f(H, ε)= {I}, f(M, 1)= {N}, f(J, ε)= {K}, f(O, 1)= {P}, ; 
 II; Z={JJ}
  ----------------
