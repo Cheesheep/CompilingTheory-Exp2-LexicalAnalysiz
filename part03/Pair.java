@@ -1,4 +1,6 @@
-package part03_test;
+package part03;
+
+import java.util.ArrayList;
 
 /**
  * @className: Pair
@@ -16,19 +18,23 @@ public class Pair {
         this.msg = msg;
     }
 
-    public int hashCode() {
-        return state + (int) msg;
+    public Integer getState() {
+        return state;
     }
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        Pair p = (Pair) other;
-        return this.state == p.state &&
-                this.msg == p.msg;
+
+    public char getMsg() {
+        return msg;
     }
+
     //for debug
     public String toString() {
         // (S, a)
         StateCode st = new StateCode();
         return "(" + st.queryCharState(this.state) + ", " + this.msg + ")";
+    }
+    //将空转移当中的目标状态更换掉
+    public void replaceState(ArrayList<Integer> arrayList,Integer state) {
+        if(arrayList.contains(this.state))
+            this.state = state;
     }
 }

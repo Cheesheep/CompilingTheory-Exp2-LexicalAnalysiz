@@ -1,4 +1,4 @@
-package part03_test;
+package part03;
 
 /**
  * @className: InfixToPostfix
@@ -7,7 +7,6 @@ package part03_test;
  * @date: 2023/04/07 16:41
  * @Company: Copyright© [日期] by [作者或个人]
  **/
-import javax.swing.plaf.nimbus.State;
 import java.util.*;
 
 public class ReversePolish {
@@ -76,12 +75,11 @@ public class ReversePolish {
                     ex_infix += '-';
             }
         }
-        System.out.println("addConnect:\n"+ex_infix);
         return ex_infix;
     }
 
     public static void main(String[] args) {
-        String infix[] = {"a (b|a a )* b",
+        String[] infix = {"a (b|a a )* b",
                 "a*b(b|(ab)*c)ca",
                 "a*b(b|(ab)*c)|ca",
                 "a*b(b|(ab)*c|ca)",
@@ -89,8 +87,8 @@ public class ReversePolish {
                 "((0|1)(010|11)*) | ((0|101)*)*"
         };
         String _infix = infix[0];
-        String postfix = infixToPostfix(_infix);
-        System.out.println("ReversePolish:\n"+postfix);  // aa-b|*b-a-
+        System.out.println("ReversePolish:\n"+infixToPostfix(_infix));  // aa-b|*b-a-
+        //测试生成一个NFA
         StateCode st = new StateCode();
         NFA nfa = new NFA(st);
         nfa = nfa.loadFromRegularExp(_infix);

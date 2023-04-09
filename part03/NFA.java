@@ -1,6 +1,5 @@
-package part03_test;
+package part03;
 
-import java.io.FileWriter;
 import java.util.*;
 
 
@@ -91,16 +90,21 @@ public class NFA {
 	}
 	private String getTransferList() {
 		String tmp = "";
+		int count = 0;
 		//output: f(S,a)=A, f(A,b)=B；
 		for (Map.Entry<Pair, ArrayList<Integer>> entry : transferMat.entrySet()) {
 			Pair key = entry.getKey();
 			ArrayList<Integer> value = entry.getValue();
 			tmp += "f" + key.toString() + "= {" + stateCode.getCharStateList(value) + "}, ";
+			if(count++ > 4){
+				tmp += '\n';
+				count = 0;
+			}
 		}
 		return tmp;
 	}
 
-	
+	//操作符运算
 	private NFA create(char regularExp) {
 		//a
 		NFA nfa = new NFA(this.stateCode);
@@ -130,7 +134,7 @@ public class NFA {
 		//create new start/end state
 		//分支的起点和终点
 		generateNewState(nfa);
-		//将新的加进去
+		//将新的两个都加进去
 		nfa.collectTransferMat(this.collectTransferMat(other.transferMat));
 		nfa.collectStateList(this.collectStateList(other.stateList));
 		nfa.collectMsgList(this.collectMsgList(other.msgList));
@@ -191,7 +195,7 @@ public class NFA {
 	public NFA loadFromRegularExp(String regularExp) {
 		//a(b|aa)*b
 		//a o (b + a o a)^* o b
-		//  ) | o * (
+		//使用栈来实现后缀表达式的运算
 		Stack<NFA> nfaStack = new Stack<>();
 		//将正则表达式转换成后缀表达式
 		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
@@ -203,25 +207,20 @@ public class NFA {
 				//是Unicode则生成一个NFA并且入栈
 				nfaStack.push(create(token));
 			}else {
+				NFA n1 = nfaStack.pop();//将栈顶取出一个元素
 				//是操作符，则出栈并且开始运算
-				switch (token){
-					case '*':
-					{
-						NFA tmp = nfaStack.pop();//将栈顶取出一个元素
-						nfaStack.push(tmp.closure());//闭包运算后再放回去
-					};break;
-					case '-':
-					{
+				switch (token) {
+					case '*' -> {
+						nfaStack.push(n1.closure());//闭包运算后再放回去
+					}
+					case '-' -> {
 						NFA n2 = nfaStack.pop();
-						NFA n1 = nfaStack.pop();
-						nfaStack.push(n1.connect(n2));
-					};break;
-					case '|':
-					{
+						nfaStack.push(n2.connect(n1));
+					}
+					case '|' -> {
 						NFA n2 = nfaStack.pop();
-						NFA n1 = nfaStack.pop();
-						nfaStack.push(n1.or(n2));
-					};break;
+						nfaStack.push(n2.or(n1));
+					}
 				}
 			}
 		}

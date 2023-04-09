@@ -1,10 +1,7 @@
 package part02;
 
-import part03_test.NFA;
-import part03_test.StateCode;
-
-import javax.swing.plaf.nimbus.State;
-import java.util.Stack;
+import part03.NFA;
+import part03.StateCode;
 
 /**
  * @className: generateNFA
