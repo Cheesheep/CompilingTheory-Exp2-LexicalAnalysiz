@@ -59,6 +59,7 @@ public class ReversePolish {
         while (!operatorStack.isEmpty()){
             postfix.append(operatorStack.pop());
         }
+        //去掉多余的括号并且输出
         return postfix.toString().replaceAll("[()]","");
     }
     //给连接符一个标记，方便计算
@@ -86,13 +87,14 @@ public class ReversePolish {
                         "a*b",
                 "((0|1)(010|11)*) | ((0|101)*)*"
         };
-        String _infix = infix[4];
+        String _infix = infix[0];
+        System.out.println("RegularExpression: \n"+_infix);
         System.out.println("ReversePolish:\n"+infixToPostfix(_infix));  // aa-b|*b-a-
         //测试生成一个NFA
-        StateCode st = new StateCode();
-        NFA nfa = new NFA(st);
-        nfa = nfa.loadFromRegularExp(_infix);
-        System.out.println("NFA STATES:\n" + nfa.generateFile());
+//        StateCode st = new StateCode();
+//        NFA nfa = new NFA(st);
+//        nfa.loadFromRegularExp(_infix);
+//        System.out.println("NFA STATES:\n" + nfa.generateFile());
     }
 }
 

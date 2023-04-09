@@ -1,52 +1,39 @@
 the 0 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N}; Σ={a, b, a, a, b}; 
-f(L, ε)= {M}, f(A, a)= {B}, f(C, b)= {D}, f(E, a)= {F}, f(G, a)= {H}, f(M, b)= {N}, 
-f(B, ε)= {K}, f(D, ε)= {J}, f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, f(J, ε)= {I, L}, 
-f(K, ε)= {I, L}, ; 
+K= {A, B, F, N}; Σ={a, b}; 
+f(A, a)= {B}, f(B, b)= {B}, f(B, a)= {F}, f(F, a)= {B}, f(B, b)= {N}, ; 
 A; Z={N}
  ----------------
 the 1 DFA: 
-K= {A, B, C, D, E, F}; Σ={a, b}; 
-f(A, a)= {B}, f(B, ε)= {A, D}, f(E, b)= {F}, f(C, ε)= {A, D}, f(D, ε)= {E}, ; 
+K= {C, F}; Σ={a, b}; 
+f(C, a)= {C}, f(C, b)= {F}, ; 
 C; Z={F}
  ----------------
 the 2 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J}; Σ={0, 1, 0, 0}; 
-f(A, 0)= {B}, f(C, 1)= {D}, f(E, 0)= {F}, f(G, 0)= {H}, f(B, ε)= {I}, f(D, ε)= {J}, 
-f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, ; 
+K= {A, B, F, H}; Σ={0, 1}; 
+f(A, 0)= {B}, f(B, 1)= {H}, f(B, 0)= {F}, f(F, 0)= {H}, ; 
 A; Z={J}
  ----------------
 the 3 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V}; Σ={a, b, b, a, b, c, c, a}; 
-f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
-f(E, b)= {F}, f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(K, b)= {L}, 
-f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, f(C, ε)= {A, D}, f(D, ε)= {E}, 
-f(F, ε)= {Q}, f(H, ε)= {R}, f(J, ε)= {K}, ; 
+K= {C, F, H, J, T, V}; Σ={a, b, c}; 
+f(C, a)= {C}, f(C, b)= {F}, f(F, b)= {H}, f(F, a)= {J}, f(J, b)= {F}, f(F, c)= {H}, 
+f(H, c)= {T}, f(T, a)= {V}, ; 
 C; Z={V}
  ----------------
 the 4 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
-f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
-f(E, b)= {F}, f(R, ε)= {X}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(V, ε)= {X}, 
-f(W, ε)= {C, S}, f(K, b)= {L}, f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, 
-f(C, ε)= {A, D}, f(D, ε)= {E}, f(F, ε)= {Q}, f(H, ε)= {R}, f(J, ε)= {K}, ; 
+K= {F, H, J, T, W}; Σ={a, b, c}; 
+f(W, a)= {W}, f(W, b)= {F}, f(F, b)= {H}, f(F, a)= {J}, f(J, b)= {F}, f(F, c)= {H}, 
+f(W, c)= {T}, f(T, a)= {H}, ; 
 W; Z={X}
  ----------------
 the 5 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
-f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {V}, f(E, b)= {F}, 
-f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {V}, f(I, a)= {J}, f(U, ε)= {M, Q}, f(V, ε)= {X}, 
-f(W, ε)= {G, U}, f(K, b)= {L}, f(O, c)= {P}, f(Q, c)= {R}, f(S, a)= {T}, f(B, ε)= {A, D}, 
-f(C, ε)= {A, D}, f(D, ε)= {E}, f(F, ε)= {W}, f(H, ε)= {X}, f(J, ε)= {K}, ; 
+K= {C, F, H, J, R}; Σ={a, b, c}; 
+f(C, a)= {C}, f(C, b)= {F}, f(F, b)= {H}, f(F, a)= {J}, f(J, b)= {F}, f(F, c)= {H}, 
+f(F, c)= {R}, f(R, a)= {H}, ; 
 C; Z={X}
  ----------------
 the 6 DFA: 
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ}; Σ={0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1}; 
-f(L, ε)= {R}, f(N, ε)= {O}, f(P, ε)= {R}, f(U, 0)= {V}, f(Q, ε)= {G, M}, f(R, ε)= {Q, T}, 
-f(S, ε)= {Q, T}, f(W, 1)= {X}, f(Y, 0)= {Z}, f(T, ε)= {JJ}, f(V, ε)= {DD}, f(AA, 1)= {BB}, 
-f(X, ε)= {Y}, f(Z, ε)= {AA}, f(BB, ε)= {DD}, f(CC, ε)= {U, W}, f(DD, ε)= {CC, FF}, f(EE, ε)= {CC, FF}, 
-f(FF, ε)= {EE, HH}, f(GG, ε)= {EE, HH}, f(HH, ε)= {JJ}, f(II, ε)= {E, GG}, f(A, 0)= {B}, f(C, 1)= {D}, 
-f(B, ε)= {F}, f(G, 0)= {H}, f(D, ε)= {F}, f(E, ε)= {A, C}, f(I, 1)= {J}, f(K, 0)= {L}, 
-f(F, ε)= {S}, f(H, ε)= {I}, f(M, 1)= {N}, f(J, ε)= {K}, f(O, 1)= {P}, ; 
+K= {D, H, J, N, X, Z}; Σ={0, 1}; 
+f(D, 0)= {D}, f(D, 1)= {X}, f(X, 0)= {Z}, f(Z, 1)= {D}, f(D, 0)= {D}, f(D, 1)= {D}, 
+f(D, 0)= {H}, f(H, 1)= {J}, f(J, 0)= {D}, f(D, 1)= {N}, f(N, 1)= {D}, ; 
 II; Z={JJ}
  ----------------

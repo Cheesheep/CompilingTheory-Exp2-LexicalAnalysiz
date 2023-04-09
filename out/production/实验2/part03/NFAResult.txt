@@ -1,6 +1,6 @@
 the 0 NFA: 
 Reverse to PostFix: abaa-|*b--
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N}; Σ={a, b, a, a, b}; 
+K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N}; Σ={a, b}; 
 f(L, ε)= {M}, f(A, a)= {B}, f(C, b)= {D}, f(E, a)= {F}, f(G, a)= {H}, f(M, b)= {N}, 
 f(B, ε)= {K}, f(D, ε)= {J}, f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, f(J, ε)= {I, L}, 
 f(K, ε)= {I, L}, ; 
@@ -14,14 +14,14 @@ C; Z={F}
  ----------------
 the 2 NFA: 
 Reverse to PostFix: 0100-|-
-K= {A, B, C, D, E, F, G, H, I, J}; Σ={0, 1, 0, 0}; 
+K= {A, B, C, D, E, F, G, H, I, J}; Σ={0, 1}; 
 f(A, 0)= {B}, f(C, 1)= {D}, f(E, 0)= {F}, f(G, 0)= {H}, f(B, ε)= {I}, f(D, ε)= {J}, 
 f(F, ε)= {G}, f(H, ε)= {J}, f(I, ε)= {C, E}, ; 
 A; Z={J}
  ----------------
 the 3 NFA: 
 Reverse to PostFix: a*bbab-*c-|ca----
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V}; Σ={a, b, b, a, b, c, c, a}; 
+K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V}; Σ={a, b, c}; 
 f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
 f(E, b)= {F}, f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(K, b)= {L}, 
 f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, f(C, ε)= {A, D}, f(D, ε)= {E}, 
@@ -30,7 +30,7 @@ C; Z={V}
  ----------------
 the 4 NFA: 
 Reverse to PostFix: a*bbab-*c-|--ca-|
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
+K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, c}; 
 f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {R}, f(Q, ε)= {G, M}, 
 f(E, b)= {F}, f(R, ε)= {X}, f(G, b)= {H}, f(T, ε)= {U}, f(I, a)= {J}, f(V, ε)= {X}, 
 f(W, ε)= {C, S}, f(K, b)= {L}, f(O, c)= {P}, f(S, c)= {T}, f(U, a)= {V}, f(B, ε)= {A, D}, 
@@ -39,7 +39,7 @@ W; Z={X}
  ----------------
 the 5 NFA: 
 Reverse to PostFix: a*bbab-*c-ca-||--
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, b, a, b, c, c, a}; 
+K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X}; Σ={a, b, c}; 
 f(L, ε)= {I, N}, f(A, a)= {B}, f(M, ε)= {I, N}, f(N, ε)= {O}, f(P, ε)= {V}, f(E, b)= {F}, 
 f(R, ε)= {S}, f(G, b)= {H}, f(T, ε)= {V}, f(I, a)= {J}, f(U, ε)= {M, Q}, f(V, ε)= {X}, 
 f(W, ε)= {G, U}, f(K, b)= {L}, f(O, c)= {P}, f(Q, c)= {R}, f(S, a)= {T}, f(B, ε)= {A, D}, 
@@ -48,7 +48,7 @@ C; Z={X}
  ----------------
 the 6 NFA: 
 Reverse to PostFix: 01|010--11-|*-0101--|**|
-K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ}; Σ={0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1}; 
+K= {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ}; Σ={0, 1}; 
 f(L, ε)= {R}, f(N, ε)= {O}, f(P, ε)= {R}, f(U, 0)= {V}, f(Q, ε)= {G, M}, f(R, ε)= {Q, T}, 
 f(S, ε)= {Q, T}, f(W, 1)= {X}, f(Y, 0)= {Z}, f(T, ε)= {JJ}, f(V, ε)= {DD}, f(AA, 1)= {BB}, 
 f(X, ε)= {Y}, f(Z, ε)= {AA}, f(BB, ε)= {DD}, f(CC, ε)= {U, W}, f(DD, ε)= {CC, FF}, f(EE, ε)= {CC, FF}, 

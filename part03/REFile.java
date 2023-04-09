@@ -29,7 +29,7 @@ public class REFile {
     void getNFA() throws IOException {
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
-            nfa = nfa.loadFromRegularExp(line);//生成对应的NFA
+            nfa.loadFromRegularExp(line);//生成对应的NFA
             //生成NFA状态机后输出
             fw.write("the " + count + " NFA: \n");
             fw.write("Reverse to PostFix: " + ReversePolish.infixToPostfix(line) + "\n");
@@ -43,36 +43,36 @@ public class REFile {
         //从NFA转到DFA
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
-            dfa = nfa.loadFromRegularExp(line);//生成对应的NFA
-            NFAToDFA();
+            nfa.loadFromRegularExp(line);//生成对应的NFA
+            removeEpsilon();//先去掉空字符
             //生成DFA状态机后输出
             fw.write("the " + count + " DFA: \n");
-            fw.write( dfa.generateFile() +"\n ----------------\n");
+            fw.write( nfa.generateFile() +"\n ----------------\n");
             stateCode = new StateCode();//重置，输出新的NFA
             nfa = new NFA(stateCode);
         }
         fw.close();
     }
-    public void NFAToDFA(){
-        //这个map的key是目标地址，value是源地址，用来将其替换
-        HashMap<Integer,Integer> dstMap = new HashMap<>();
-
-        for(Map.Entry<Pair, ArrayList<Integer>> entry :dfa.transferMat.entrySet()){
+    private void removeEpsilon(){
+        //用Iterator去遍历就可以解决在循环当中会改变transferMat的值导致某次循环的指针变为空的问题
+        Iterator<Map.Entry<Pair,ArrayList<Integer>>> transIterator = nfa.transferMat.entrySet().iterator();
+        while (transIterator.hasNext()){
+            Map.Entry<Pair,ArrayList<Integer>> entry = transIterator.next();
             Pair pair = entry.getKey();
             ArrayList<Integer> dstStates = entry.getValue();
-            if(pair.getMsg() == 'ε'){
-                dfa.transferMat.remove(pair); //去掉带有空转移的状态
+            if(pair.getMsg() == nfa.epsilon){
+                transIterator.remove(); //去掉带有空转移的状态
                 for(Integer dst:dstStates)
-                    dfa.stateList.remove(dst);
+                    nfa.stateList.remove(dst);
                 //重新遍历剩下的元素，并且进行替换
-                for(Map.Entry<Pair, ArrayList<Integer>> entry1 :dfa.transferMat.entrySet()){
+                for(Map.Entry<Pair, ArrayList<Integer>> entry1 :nfa.transferMat.entrySet()){
                     Pair pair1 = entry1.getKey();
                     ArrayList<Integer> dstStates1 = entry1.getValue();
                     //替换掉源地址
                     pair1.replaceState(dstStates,pair.getState());
                     //替换目标地址
                     for (int i = 0; i < dstStates1.size(); i++) {
-                        if(dstStates.contains(dstStates.get(i)))
+                        if(dstStates.contains(dstStates1.get(i)))
                             dstStates1.set(i, pair.getState());//替换
                     }
                     //用set对替换后的目标状态进行去重
@@ -82,6 +82,9 @@ public class REFile {
                 }
             }
         }
+    }
+    private void NFAToDFA(){
+        //使用确定化算法将NFA转换成DFA
 
     }
 }

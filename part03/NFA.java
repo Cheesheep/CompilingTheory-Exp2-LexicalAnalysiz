@@ -76,6 +76,10 @@ public class NFA {
 	}
 	private String getMsgList() {
 		String tmp = "";
+		//对arraylist进行去重
+		Set<Character> set = new HashSet<>(msgList);
+		msgList.clear();
+		msgList.addAll(set);
 		int i = 0;
 		int size = msgList.size();
 		for(; i<size; ++i) {
@@ -192,7 +196,7 @@ public class NFA {
 	}
 
 
-	public NFA loadFromRegularExp(String regularExp) {
+	public void loadFromRegularExp(String regularExp) {
 		//a(b|aa)*b
 		//a o (b + a o a)^* o b
 		//使用栈来实现后缀表达式的运算
@@ -224,7 +228,12 @@ public class NFA {
 				}
 			}
 		}
-		return nfaStack.peek();
+		NFA stackTop = nfaStack.peek();
+		this.transferMat = stackTop.transferMat;
+		this.stateList = stackTop.stateList;
+		this.msgList = stackTop.msgList;
+		this.startState = stackTop.startState;
+		this.endState = stackTop.endState;
 	}
 
 }
