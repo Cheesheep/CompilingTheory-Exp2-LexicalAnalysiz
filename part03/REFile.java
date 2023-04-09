@@ -44,7 +44,7 @@ public class REFile {
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
             dfa = nfa.loadFromRegularExp(line);//生成对应的NFA
-            NFAToDFA();
+            //NFAToDFA();
             //生成DFA状态机后输出
             fw.write("the " + count + " DFA: \n");
             fw.write( dfa.generateFile() +"\n ----------------\n");
