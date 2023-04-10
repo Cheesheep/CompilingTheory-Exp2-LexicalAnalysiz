@@ -12,10 +12,10 @@ public class NFA {
 	那么输出是：K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
 
 	 * */
+	String RegularExpression;
 	int startState;
 	int endState;
 	char epsilon = 'ε';
-	
 	// (S, a) -> A
 	// (S, a) -> B
 	// => (S,a) -> {A, B}
@@ -74,7 +74,7 @@ public class NFA {
 		}
 		return tmp;
 	}
-	private String getMsgList() {
+	String getMsgList() {
 		String tmp = "";
 		//对arraylist进行去重
 		int i = 0;
@@ -89,7 +89,7 @@ public class NFA {
 		}
 		return tmp;
 	}
-	private String getTransferList() {
+	String getTransferList() {
 		String tmp = "";
 		int count = 0;
 		//output: f(S,a)=A, f(A,b)=B；
@@ -197,6 +197,7 @@ public class NFA {
 		//a(b|aa)*b
 		//a o (b + a o a)^* o b
 		//使用栈来实现后缀表达式的运算
+		RegularExpression = regularExp;
 		Stack<NFA> nfaStack = new Stack<>();
 		//将正则表达式转换成后缀表达式
 		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
@@ -246,15 +247,21 @@ public class NFA {
 			ArrayList<Integer> dstStates = entry.getValue();
 			if(pair.getMsg() == epsilon){
 				transIterator.remove(); //去掉带有空转移的状态
-				for(Integer dst:dstStates)
+				for(Integer dst:dstStates){
+					//有可能终止状态或起始状态被替代掉，需要及时更新
+					if(dst == endState)
+						endState = pair.getState();
+					else if(dst == startState)
+						startState = pair.getState();
 					stateList.remove(dst);
+				}
 				//重新遍历剩下的元素，并且进行替换
 				for(Map.Entry<Pair, ArrayList<Integer>> entry1 :transferMat.entrySet()){
 					Pair pair1 = entry1.getKey();
 					ArrayList<Integer> dstStates1 = entry1.getValue();
-					//替换掉源地址
+					//源地址若有空转移的目标则替换掉
 					pair1.replaceState(dstStates,pair.getState());
-					//替换目标地址
+					//同理，替换目标地址
 					for (int i = 0; i < dstStates1.size(); i++) {
 						if(dstStates.contains(dstStates1.get(i)))
 							dstStates1.set(i, pair.getState());//替换

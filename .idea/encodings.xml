@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/PositiveFloatFinder/src/NFA.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/PositiveFloatFinder/src/PositiveFloatApp.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/part03/NFA.java" charset="GBK" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

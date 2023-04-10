@@ -23,16 +23,21 @@ public class DFA extends NFA{
     Map<Integer,HashSet<Integer>> saveAllStateMap = new HashMap<>();
 
     //主要作为一个变量名称方便使用
-    ArrayList<HashSet<Integer>> theFormat;
+    ArrayList<HashSet<Integer>> theFormat;//DFA会有多个终止状态
 
-    public DFA(StateCode stateCode) {
-        super(stateCode);
+    ArrayList<Integer> endState = new ArrayList<>();
+
+    public DFA(NFA nfa) {
+        super(nfa.stateCode);
+        this.RegularExpression = nfa.RegularExpression;
+        this.msgList.addAll(nfa.msgList);//信息列表是一致的
+        this.stateList.addAll(nfa.stateList);
+        this.startState = nfa.startState;
+        this.endState.add(nfa.endState);
     }
     //用确定化算法生成新的状态机DFA
     //这里先生成状态表，最后再生成DFA信息
     public void generateStateFormat(NFA nfa){
-        this.msgList.addAll(nfa.msgList);//信息列表是一致的
-        this.stateList.addAll(nfa.stateList); //
         //创建表格先将每行对应的状态定好
         for(Integer state: nfa.stateList){
             theFormat = new ArrayList<>();
@@ -56,6 +61,9 @@ public class DFA extends NFA{
             if(nowStates.size() == 2){//等于2是为了防止有两个以上的时候，会重复生成
                 //如果含有多个目标如f（B，b）={A，C}，则要用新的状态来映射
                 Integer newState = stateCode.getNewStateId();
+                //如果旧状态包含了终止状态
+                if(nowStates.contains(endState.get(0)))
+                    endState.add(newState);
                 stateList.add(newState);
                 newStateMap.put(newState,nowStates);
             }
@@ -96,6 +104,9 @@ public class DFA extends NFA{
                 //返回-1说明该状态不存在
                 if(key == -1){
                     Integer _newState = stateCode.getNewStateId();
+                    //如果旧状态包含了终止状态
+                    if(tmpStates.contains(endState.get(0)))
+                        endState.add(_newState);
                     stateList.add(_newState);
                     newerStateMap.put(_newState, tmpStates);
                 }else if(key != -2){//若返回-2则为空，不为空则说明是重复的状态
@@ -134,11 +145,52 @@ public class DFA extends NFA{
             //遍历每一行内的每个数据
             for(int i=0;i < theFormat.size();i++){
                 HashSet<Integer> data = theFormat.get(i);
-                if(!data.isEmpty()){ //判断该状态迁移是否存在
+                if(!data.isEmpty()) //判断该状态迁移是否存在
                     transferMat.put(new Pair(srcState,msgList.get(i)),new ArrayList<>(data));
-                }
             }
         }
+    }
+    public boolean parseString(String str){
+
+        int nowState = this.startState;
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);//当前字符输入
+            int msgIndex = this.msgList.indexOf(ch);//找到所在列的索引
+            if(msgIndex == -1) //没有msg和输入的字符匹配
+                return false;
+            //访问所在的单元格，当前行根据当前状态获取
+            Iterator<Integer> ite = stateFormat.get(nowState).get(msgIndex).iterator();
+            //判断访问的单元格还有无元素
+            //无则判断是否为终止状态
+            if(ite.hasNext())
+                nowState = ite.next();//有则进入下一次循环
+                //不为终止状态，说明匹配失败，该自动机无法识别该字符串
+            else
+                return false;
+        }
+        return endState.contains(nowState);
+    }
+    public String generateFile() {
+        //output： K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
+        String tmp = "K= {";
+        tmp += this.getStateList(); // S，A，B
+        tmp += "}; ";
+        //Σ={a,b}
+        tmp += "Σ={";
+        tmp += this.getMsgList();
+        tmp += "}; \n";
+        //f(S,a)=A, f(A,b)=B；
+        tmp += this.getTransferList() + "; \n";
+        //S；
+        tmp += stateCode.queryCharState(this.startState);
+        tmp += "; ";
+        //Z={B}
+        tmp += "Z={";
+        for(Integer ed:endState){
+            tmp += stateCode.queryCharState(ed) + ", ";
+        }
+        tmp += "}";
+        return tmp;
     }
     void showStateFormat(){
         System.out.println("DFA State Format");
