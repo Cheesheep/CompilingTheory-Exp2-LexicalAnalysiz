@@ -5,21 +5,18 @@ import java.util.*;
 
 public class NFA {
 	/*
-	 * 一个文本文件（格式自定义）
-	输出：读入文件中的DFA/NFA，创建对应的DFA/NFA对象，再写回另一文件中。
-	
-	示例：如果输入是“f(S,a)=A, f(A,b)=B, {B}” //假设默认开始状态是S，
-	那么输出是：K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
-
+	 * 读入正规式，如 a*b
+	 * 输出NFA如下：
+		K= {A, B, C, D, E, F}; Σ={a, b};
+		f(A, a)= {B}, f(B, ε)= {A, D}, f(E, b)= {F}, f(C, ε)= {A, D}, f(D, ε)= {E}, ;
+		C; Z={F}
 	 * */
 	String RegularExpression;
 	int startState;
 	int endState;
 	char epsilon = 'ε';
-	// (S, a) -> A
-	// (S, a) -> B
-	// => (S,a) -> {A, B}
 	StateCode stateCode;
+	// => (S,a) -> {A, B} 可能有多个状态，所以用list
 	HashMap<Pair, ArrayList<Integer>> transferMat = new HashMap<>();
 	//记录所有产生的状态如A、B等
 	ArrayList<Integer> stateList = new ArrayList<>();
@@ -195,15 +192,13 @@ public class NFA {
 
 	public void loadFromRegularExp(String regularExp) {
 		//a(b|aa)*b
-		//a o (b + a o a)^* o b
+		//a - (b | a - a)^* - b
 		//使用栈来实现后缀表达式的运算
 		RegularExpression = regularExp;
 		Stack<NFA> nfaStack = new Stack<>();
 		//将正则表达式转换成后缀表达式
 		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
-
-		int size = postfix_RE.length();
-		for(int i=0; i<size; ++i) {
+		for(int i=0; i<postfix_RE.length(); ++i) {
 			char token = postfix_RE.charAt(i);
 			if (Character.isLetterOrDigit(token)) {
 				//是Unicode则生成一个NFA并且入栈
@@ -251,7 +246,7 @@ public class NFA {
 					//有可能终止状态或起始状态被替代掉，需要及时更新
 					if(dst == endState)
 						endState = pair.getState();
-					else if(dst == startState)
+					if(dst == startState)
 						startState = pair.getState();
 					stateList.remove(dst);
 				}
@@ -261,6 +256,7 @@ public class NFA {
 					ArrayList<Integer> dstStates1 = entry1.getValue();
 					//源地址若有空转移的目标则替换掉
 					pair1.replaceState(dstStates,pair.getState());
+
 					//同理，替换目标地址
 					for (int i = 0; i < dstStates1.size(); i++) {
 						if(dstStates.contains(dstStates1.get(i)))
@@ -274,5 +270,4 @@ public class NFA {
 			}
 		}
 	}
-
 }

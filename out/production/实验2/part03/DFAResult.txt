@@ -49,5 +49,5 @@ K= {D, H, J, N, X, Z, KK, LL, MM, NN}; 危={0, 1};
 f(X, 0)= {Z}, f(Z, 1)= {D}, f(D, 0)= {LL}, f(D, 1)= {KK}, f(KK, 0)= {MM}, f(KK, 1)= {KK}, 
 f(LL, 0)= {LL}, f(LL, 1)= {NN}, f(MM, 0)= {LL}, f(MM, 1)= {NN}, f(NN, 0)= {MM}, f(H, 1)= {J}, 
 f(NN, 1)= {KK}, f(J, 0)= {D}, f(N, 1)= {D}, ; 
-II; Z={D, KK, LL, MM, NN, }
+D; Z={D, KK, LL, MM, NN, }
  ----------------
