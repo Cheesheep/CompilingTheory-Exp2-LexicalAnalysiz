@@ -18,7 +18,7 @@ import java.util.*;
 public class REFile {
     StateCode stateCode = new StateCode();
     NFA nfa = new NFA(stateCode);
-    NFA dfa;
+    DFA dfa;
     BufferedReader reader;
     FileWriter fw;
     void loadFile(String input,String output) throws Exception {
@@ -45,6 +45,7 @@ public class REFile {
         for (int count = 0; line != null; line = reader.readLine(),count++) {
             nfa.loadFromRegularExp(line);//生成对应的NFA
             removeEpsilon();//先去掉空字符
+            NFAToDFA();
             //生成DFA状态机后输出
             fw.write("the " + count + " DFA: \n");
             fw.write( nfa.generateFile() +"\n ----------------\n");
@@ -85,6 +86,8 @@ public class REFile {
     }
     private void NFAToDFA(){
         //使用确定化算法将NFA转换成DFA
-
+        dfa = new DFA(nfa.stateCode);
+        dfa.generateStateFormat(nfa);
+        dfa.showStateFormat();
     }
 }

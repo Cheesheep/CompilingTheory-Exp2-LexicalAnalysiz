@@ -77,9 +77,6 @@ public class NFA {
 	private String getMsgList() {
 		String tmp = "";
 		//对arraylist进行去重
-		Set<Character> set = new HashSet<>(msgList);
-		msgList.clear();
-		msgList.addAll(set);
 		int i = 0;
 		int size = msgList.size();
 		for(; i<size; ++i) {
@@ -229,6 +226,10 @@ public class NFA {
 			}
 		}
 		NFA stackTop = nfaStack.peek();
+		//先给msgList去重
+		Set<Character> set = new HashSet<>(stackTop.msgList);
+		stackTop.msgList.clear();
+		stackTop.msgList.addAll(set);
 		this.transferMat = stackTop.transferMat;
 		this.stateList = stackTop.stateList;
 		this.msgList = stackTop.msgList;
