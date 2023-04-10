@@ -44,50 +44,22 @@ public class REFile {
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
             nfa.loadFromRegularExp(line);//生成对应的NFA
-            removeEpsilon();//先去掉空字符
+            nfa.removeEpsilon();//先去掉空字符
             NFAToDFA();
             //生成DFA状态机后输出
-            fw.write("the " + count + " DFA: \n");
-            fw.write( nfa.generateFile() +"\n ----------------\n");
+            fw.write("the " + (count+1) + " DFA: \n");
+            fw.write( dfa.generateFile() +"\n ----------------\n");
             stateCode = new StateCode();//重置，输出新的NFA
             nfa = new NFA(stateCode);
         }
         fw.close();
     }
-    private void removeEpsilon(){
-        //用Iterator去遍历就可以解决在循环当中会改变transferMat的值导致某次循环的指针变为空的问题
-        Iterator<Map.Entry<Pair,ArrayList<Integer>>> transIterator = nfa.transferMat.entrySet().iterator();
-        while (transIterator.hasNext()){
-            Map.Entry<Pair,ArrayList<Integer>> entry = transIterator.next();
-            Pair pair = entry.getKey();
-            ArrayList<Integer> dstStates = entry.getValue();
-            if(pair.getMsg() == nfa.epsilon){
-                transIterator.remove(); //去掉带有空转移的状态
-                for(Integer dst:dstStates)
-                    nfa.stateList.remove(dst);
-                //重新遍历剩下的元素，并且进行替换
-                for(Map.Entry<Pair, ArrayList<Integer>> entry1 :nfa.transferMat.entrySet()){
-                    Pair pair1 = entry1.getKey();
-                    ArrayList<Integer> dstStates1 = entry1.getValue();
-                    //替换掉源地址
-                    pair1.replaceState(dstStates,pair.getState());
-                    //替换目标地址
-                    for (int i = 0; i < dstStates1.size(); i++) {
-                        if(dstStates.contains(dstStates1.get(i)))
-                            dstStates1.set(i, pair.getState());//替换
-                    }
-                    //用set对替换后的目标状态进行去重
-                    Set<Integer> set = new HashSet<>(dstStates1);
-                    dstStates1.clear();
-                    dstStates1.addAll(set);
-                }
-            }
-        }
-    }
+
     private void NFAToDFA(){
         //使用确定化算法将NFA转换成DFA
         dfa = new DFA(nfa.stateCode);
-        dfa.generateStateFormat(nfa);
-        dfa.showStateFormat();
+        dfa.generateStateFormat(nfa);//生成状态迁移表
+        dfa.showStateFormat();//打印到控制台
+        dfa.addFormatDataToDFA();
     }
 }

@@ -31,7 +31,8 @@ public class DFA extends NFA{
     //用确定化算法生成新的状态机DFA
     //这里先生成状态表，最后再生成DFA信息
     public void generateStateFormat(NFA nfa){
-        this.msgList = nfa.msgList;//信息列表是一致的
+        this.msgList.addAll(nfa.msgList);//信息列表是一致的
+        this.stateList.addAll(nfa.stateList); //
         //创建表格先将每行对应的状态定好
         for(Integer state: nfa.stateList){
             theFormat = new ArrayList<>();
@@ -59,55 +60,54 @@ public class DFA extends NFA{
                 newStateMap.put(newState,nowStates);
             }
         }
-        saveAllStateMap.putAll(newStateMap);//保存
+        saveAllStateMap.putAll(newStateMap);
         generateNewStateFormat();
-        //changeOldStates();
-
+        changeOldStates();//替换掉旧状态的表示
     }
     private void changeOldStates(){
         //将旧的状态全部转换成新的状态
-        for(Map.Entry<Integer,HashSet<Integer>> entry:newStateMap.entrySet()){
+        for(Map.Entry<Integer,HashSet<Integer>> entry:saveAllStateMap.entrySet()){
             Integer newState = entry.getKey();
             HashSet<Integer> oldState = entry.getValue();
             oldState.clear();
             oldState.add(newState);
         }
     }
-    private boolean isCreatedNewState = false;
     private void generateNewStateFormat(){
-        //TODO ：给新的状态行添加数据，并且如果又产生了新的状态，需要递归调用
+        //给新的状态行添加数据，并且如果又产生了新的状态，需要递归调用
         //这里是使用备份来操作，因为需要将已经处理的状态清除掉，避免重复递归生成新的状态
-        Iterator<Map.Entry<Integer,HashSet<Integer>>> MapIterator = newStateMap.entrySet().iterator();
-        while (MapIterator.hasNext()){
+        for (Map.Entry<Integer, HashSet<Integer>> entry : newStateMap.entrySet()) {
             //相当于循环每一行新的表格数据
-            Map.Entry<Integer,HashSet<Integer>> entry = MapIterator.next();
             Integer newState = entry.getKey();
             HashSet<Integer> oldStates = entry.getValue();//旧的状态
             theFormat = new ArrayList<>();//开拓新的表格空间
             for (int i = 0; i < msgList.size(); i++) {
                 theFormat.add(new HashSet<>());
             }
-            for(Integer oldState:oldStates){
-                //将旧状态会产生的目标状态迁移过来
-                ArrayList<HashSet<Integer>> oldFormat = stateFormat.get(oldState);
-                for(int i=0;i < theFormat.size();i++){
-                    HashSet<Integer> tmp = theFormat.get(i);
-                    tmp.addAll(oldFormat.get(i));
-                    //如果又产生了新的状态
-                    if(!isCreatedNewState && isNewState(tmp)){
-                        isCreatedNewState = true;
-                        Integer _newState = stateCode.getNewStateId();
-                        stateList.add(_newState);
-                        newerStateMap.put(_newState,tmp);
-                    }
+            for (int i = 0; i < theFormat.size(); i++) {
+                //遍历该新行的所有单元格
+                HashSet<Integer> tmpStates = theFormat.get(i);
+                for (Integer oldState : oldStates){
+                    //查找旧状态对应的单元格，并给到新的单元格
+                    ArrayList<HashSet<Integer>> oldFormat = stateFormat.get(oldState);
+                    tmpStates.addAll(oldFormat.get(i));
+                }
+                int key = isNewState(tmpStates);
+                //返回-1说明该状态不存在
+                if(key == -1){
+                    Integer _newState = stateCode.getNewStateId();
+                    stateList.add(_newState);
+                    newerStateMap.put(_newState, tmpStates);
+                }else if(key != -2){//若返回-2则为空，不为空则说明是重复的状态
+                    //TODO 既然是重复的状态则可以指向之前已经存下来的状态变量
+                    //TODO 这样就可以通过指针将不同单元格中相同的一组状态统一表示
+                    theFormat.set(i,saveAllStateMap.get(key));
                 }
             }
             //填好这一行后，将其放入
-            stateFormat.put(newState,theFormat);
-            //MapIterator.remove();//去除已经添加了的状态
+            stateFormat.put(newState, theFormat);
         }
-        isCreatedNewState = false;//标志位复位，再次用于下一行
-        newStateMap.clear();
+        newStateMap.clear();//清除已经处理过的状态
         newStateMap.putAll(newerStateMap);
         saveAllStateMap.putAll(newerStateMap);
         newerStateMap.clear();
@@ -115,17 +115,35 @@ public class DFA extends NFA{
             generateNewStateFormat();
     }
     //用于判断当前的状态是否已经存在
-    private boolean isNewState(HashSet<Integer> nowStates){
+    private Integer isNewState(HashSet<Integer> nowStates){
+        if(nowStates.isEmpty())
+            return -2;
         for (Integer key: saveAllStateMap.keySet()){
             HashSet<Integer> set = saveAllStateMap.get(key);
             if(set.equals(nowStates)) //存在相等的set
-                return false;
+                return key;
         }
-        return true;
+        return -1;
+    }
+    public void addFormatDataToDFA(){
+        //遍历整个表格，逐行读取
+        for (Map.Entry<Integer,ArrayList<HashSet<Integer>>> entry
+                :stateFormat.entrySet()){
+            int srcState = entry.getKey();
+            theFormat = entry.getValue();
+            //遍历每一行内的每个数据
+            for(int i=0;i < theFormat.size();i++){
+                HashSet<Integer> data = theFormat.get(i);
+                if(!data.isEmpty()){ //判断该状态迁移是否存在
+                    transferMat.put(new Pair(srcState,msgList.get(i)),new ArrayList<>(data));
+                }
+            }
+        }
     }
     void showStateFormat(){
         System.out.println("DFA State Format");
         System.out.print("   ");
+        //输出列头
         for(Character c:msgList){
             System.out.print(c + "  ");
         }
@@ -141,7 +159,7 @@ public class DFA extends NFA{
                 System.out.print(info + "  ");
             }
             else
-                System.out.print(stateCode.queryCharState(entry.getKey())+ "  ");
+                System.out.print(stateCode.queryCharState(entry.getKey())+ "  ");//输出行头状态
             theFormat = entry.getValue();
             for(HashSet<Integer> data:theFormat){
                 String info = "";
@@ -155,4 +173,5 @@ public class DFA extends NFA{
         }
         System.out.println("\n---------------------\n");
     }
+
 }
