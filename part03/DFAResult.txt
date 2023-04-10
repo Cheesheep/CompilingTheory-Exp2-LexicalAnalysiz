@@ -32,6 +32,12 @@ f(F, c)= {R}, f(R, a)= {H}, ;
 C; Z={X}
  ----------------
 the 6 DFA: 
+K= {C, F, H, J, R, T}; Σ={a, b, c, s, d, e}; 
+f(R, s)= {T}, f(T, s)= {T}, f(C, a)= {C}, f(C, b)= {F}, f(F, b)= {H}, f(F, d)= {J}, 
+f(J, b)= {F}, f(F, c)= {H}, f(F, c)= {R}, f(T, e)= {H}, ; 
+C; Z={DD}
+ ----------------
+the 7 DFA: 
 K= {D, H, J, N, X, Z}; Σ={0, 1}; 
 f(D, 0)= {D}, f(D, 1)= {X}, f(X, 0)= {Z}, f(Z, 1)= {D}, f(D, 0)= {D}, f(D, 1)= {D}, 
 f(D, 0)= {H}, f(H, 1)= {J}, f(J, 0)= {D}, f(D, 1)= {N}, f(N, 1)= {D}, ; 
