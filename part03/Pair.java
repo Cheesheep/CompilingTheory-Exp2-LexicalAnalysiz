@@ -18,12 +18,14 @@ public class Pair {
         this.msg = msg;
     }
 
-    public Integer getState() {
-        return state;
+    public int hashCode() {
+        return state + (int) msg;
     }
-
-    public char getMsg() {
-        return msg;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        Pair p = (Pair) other;
+        return this.state == p.state &&
+                this.msg == p.msg;
     }
 
     //for debug
@@ -36,5 +38,13 @@ public class Pair {
     public void replaceState(ArrayList<Integer> arrayList,Integer state) {
         if(arrayList.contains(this.state))
             this.state = state;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public char getMsg() {
+        return msg;
     }
 }

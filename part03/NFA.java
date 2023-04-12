@@ -5,21 +5,18 @@ import java.util.*;
 
 public class NFA {
 	/*
-	 * 一个文本文件（格式自定义）
-	输出：读入文件中的DFA/NFA，创建对应的DFA/NFA对象，再写回另一文件中。
-	
-	示例：如果输入是“f(S,a)=A, f(A,b)=B, {B}” //假设默认开始状态是S，
-	那么输出是：K={S，A，B}；Σ={a,b}；f(S,a)=A, f(A,b)=B；S；Z={B}
-
+	 * 读入正规式，如 a*b
+	 * 输出NFA如下：
+		K= {A, B, C, D, E, F}; Σ={a, b};
+		f(A, a)= {B}, f(B, ε)= {A, D}, f(E, b)= {F}, f(C, ε)= {A, D}, f(D, ε)= {E}, ;
+		C; Z={F}
 	 * */
+	String RegularExpression;
 	int startState;
 	int endState;
 	char epsilon = 'ε';
-	
-	// (S, a) -> A
-	// (S, a) -> B
-	// => (S,a) -> {A, B}
 	StateCode stateCode;
+	// => (S,a) -> {A, B} 可能有多个状态，所以用list
 	HashMap<Pair, ArrayList<Integer>> transferMat = new HashMap<>();
 	//记录所有产生的状态如A、B等
 	ArrayList<Integer> stateList = new ArrayList<>();
@@ -74,8 +71,9 @@ public class NFA {
 		}
 		return tmp;
 	}
-	private String getMsgList() {
+	String getMsgList() {
 		String tmp = "";
+		//对arraylist进行去重
 		int i = 0;
 		int size = msgList.size();
 		for(; i<size; ++i) {
@@ -88,7 +86,7 @@ public class NFA {
 		}
 		return tmp;
 	}
-	private String getTransferList() {
+	String getTransferList() {
 		String tmp = "";
 		int count = 0;
 		//output: f(S,a)=A, f(A,b)=B；
@@ -105,46 +103,43 @@ public class NFA {
 	}
 
 	//操作符运算
-	private NFA create(char regularExp) {
+	private NFA create(char msg) {
 		//a
 		NFA nfa = new NFA(this.stateCode);
 		generateNewState(nfa);
-		nfa.msgList.add(regularExp);
-		nfa.addEdge(nfa.startState, nfa.endState, regularExp);
+		nfa.msgList.add(msg);
+		nfa.addEdge(nfa.startState, nfa.endState, msg);
 		return nfa;
 	}
-	
 	private NFA connect(NFA other) {
 		//r1 o r2 连接符：‘-’
 		//r1.connect(r2)
 		NFA nfa = new NFA(this.stateCode);
 		nfa.startState = this.startState;
 		nfa.endState = other.endState;
+		//将数据都拼接并迁移过来
 		nfa.transferMat = this.collectTransferMat(other.transferMat);
 		nfa.stateList = this.collectStateList(other.stateList);
 		nfa.msgList = this.collectMsgList(other.msgList);
+		//生成连接的边
 		nfa.addEdge(this.endState, other.startState, epsilon);
 		return nfa;
 	}
-	
 	private NFA or(NFA other) {
 		//r1 | r2
-		//return NFA(r1) union NFA(r2)
+		//用法： n1.or(n2)
 		NFA nfa = new NFA(this.stateCode);
-		//create new start/end state
 		//分支的起点和终点
 		generateNewState(nfa);
-		//将新的两个都加进去
+		//将新的两个数据都添加进去
 		nfa.collectTransferMat(this.collectTransferMat(other.transferMat));
 		nfa.collectStateList(this.collectStateList(other.stateList));
 		nfa.collectMsgList(this.collectMsgList(other.msgList));
-		
 		//create new epsilon edge
 		nfa.addEdge(nfa.startState, this.startState, epsilon);
 		nfa.addEdge(nfa.startState, other.startState, epsilon);
 		nfa.addEdge(other.endState, nfa.endState, epsilon);
 		nfa.addEdge(this.endState, nfa.endState, epsilon);
-		
 		return nfa;
 	}
 	private NFA closure(){
@@ -160,7 +155,6 @@ public class NFA {
 		nfa.addEdge(nfa.startState,this.startState,epsilon);
 		nfa.addEdge(this.endState,nfa.endState,epsilon);
 		nfa.addEdge(nfa.startState, nfa.endState,epsilon);//允许为空直接跳跃
-
 		return nfa;
 	}
 	private void generateNewState(NFA nfa){
@@ -192,16 +186,15 @@ public class NFA {
 	}
 
 
-	public NFA loadFromRegularExp(String regularExp) {
+	public void loadFromRegularExp(String regularExp) {
 		//a(b|aa)*b
-		//a o (b + a o a)^* o b
+		//a - (b | a - a)^* - b
 		//使用栈来实现后缀表达式的运算
+		RegularExpression = regularExp;
 		Stack<NFA> nfaStack = new Stack<>();
 		//将正则表达式转换成后缀表达式
 		String postfix_RE = ReversePolish.infixToPostfix(regularExp);
-
-		int size = postfix_RE.length();
-		for(int i=0; i<size; ++i) {
+		for(int i=0; i<postfix_RE.length(); ++i) {
 			char token = postfix_RE.charAt(i);
 			if (Character.isLetterOrDigit(token)) {
 				//是Unicode则生成一个NFA并且入栈
@@ -224,7 +217,52 @@ public class NFA {
 				}
 			}
 		}
-		return nfaStack.peek();
+		NFA stackTop = nfaStack.peek();
+		//先给msgList去重
+		Set<Character> set = new HashSet<>(stackTop.msgList);
+		stackTop.msgList.clear();
+		stackTop.msgList.addAll(set);
+		this.transferMat = stackTop.transferMat;
+		this.stateList = stackTop.stateList;
+		this.msgList = stackTop.msgList;
+		this.startState = stackTop.startState;
+		this.endState = stackTop.endState;
 	}
-
+	//去除空字符连接
+	public void removeEpsilon(){
+		//用Iterator去遍历就可以解决在循环当中会改变transferMat的值导致某次循环的指针变为空的问题
+		Iterator<Map.Entry<Pair,ArrayList<Integer>>> transIterator = transferMat.entrySet().iterator();
+		while (transIterator.hasNext()){
+			Map.Entry<Pair,ArrayList<Integer>> entry = transIterator.next();
+			Pair pair = entry.getKey();
+			ArrayList<Integer> dstStates = entry.getValue();
+			if(pair.getMsg() == epsilon){
+				transIterator.remove(); //去掉带有空转移的状态
+				for(Integer dst:dstStates){
+					//有可能终止状态或起始状态被替代掉，需要及时更新
+					if(dst == endState)
+						endState = pair.getState();
+					if(dst == startState)
+						startState = pair.getState();
+					stateList.remove(dst);
+				}
+				//重新遍历剩下的元素，并且进行替换
+				for(Map.Entry<Pair, ArrayList<Integer>> entry1 :transferMat.entrySet()){
+					Pair pair1 = entry1.getKey();
+					ArrayList<Integer> dstStates1 = entry1.getValue();
+					//源地址若有空转移的目标则替换掉
+					pair1.replaceState(dstStates,pair.getState());
+					//同理，替换目标地址
+					for (int i = 0; i < dstStates1.size(); i++) {
+						if(dstStates.contains(dstStates1.get(i)))
+							dstStates1.set(i, pair.getState());//替换
+					}
+					//用set对替换后的目标状态进行去重
+					Set<Integer> set = new HashSet<>(dstStates1);
+					dstStates1.clear();
+					dstStates1.addAll(set);
+				}
+			}
+		}
+	}
 }

@@ -16,6 +16,5 @@ public class createNFA {
         ref.loadFile("part03/RegularExpression.txt","part03/NFAResult.txt");
         ref.getNFA();
         System.out.println("Run Success! Please check NFAResult.txt !");
-
     }
 }

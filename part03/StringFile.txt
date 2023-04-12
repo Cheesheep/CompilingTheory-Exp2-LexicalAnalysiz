@@ -1,0 +1,8 @@
+aaab
+aab
+abaabb
+
+aaabababcbca
+000
+00
+0101000

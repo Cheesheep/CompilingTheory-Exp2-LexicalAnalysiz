@@ -2,6 +2,8 @@ a(b|aa)*b
 a*b
 0(1|00)
 a*b(b|(ab)*c)ca
+a*b(b|(ab)*c)*ca
 a*b(b|(ab)*c)|ca
 a*b(b|(ab)*c|ca)
+a*b(b|(db)*c|css*e)
 ((0|1)(010|11)*) | ((0|101)*)*

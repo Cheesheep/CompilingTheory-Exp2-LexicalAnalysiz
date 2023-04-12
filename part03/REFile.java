@@ -18,7 +18,8 @@ import java.util.*;
 public class REFile {
     StateCode stateCode = new StateCode();
     NFA nfa = new NFA(stateCode);
-    NFA dfa;
+    DFA dfa;
+    Map<String,DFA> dfaList = new HashMap<>();
     BufferedReader reader;
     FileWriter fw;
     void loadFile(String input,String output) throws Exception {
@@ -26,62 +27,43 @@ public class REFile {
         fw = new FileWriter(output);
         reader = new BufferedReader(fr);
     }
-    void getNFA() throws IOException {
+    public NFA getNFA() throws IOException {
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
-            nfa = nfa.loadFromRegularExp(line);//生成对应的NFA
+            nfa.loadFromRegularExp(line);//生成对应的NFA
             //生成NFA状态机后输出
-            fw.write("the " + count + " NFA: \n");
+            fw.write("the " + (count+1) + " NFA: \n");
             fw.write("Reverse to PostFix: " + ReversePolish.infixToPostfix(line) + "\n");
             fw.write(nfa.generateFile() + "\n ----------------\n");
             stateCode = new StateCode();//重置，输出新的NFA
             nfa = new NFA(stateCode);
         }
         fw.close();
+        return nfa;
     }
-    public void getDFA() throws IOException {
+    public Map<String, DFA> getDFA() throws IOException {
         //从NFA转到DFA
         String line = reader.readLine();
         for (int count = 0; line != null; line = reader.readLine(),count++) {
-            dfa = nfa.loadFromRegularExp(line);//生成对应的NFA
-            //NFAToDFA();
+            nfa.loadFromRegularExp(line);//生成对应的NFA
+            nfa.removeEpsilon();//先去掉空字符
+            NFAToDFA();
+            dfaList.put("Type"+(count+1),dfa);
             //生成DFA状态机后输出
-            fw.write("the " + count + " DFA: \n");
+            fw.write("the " + (count+1) + " DFA: \n");
             fw.write( dfa.generateFile() +"\n ----------------\n");
             stateCode = new StateCode();//重置，输出新的NFA
             nfa = new NFA(stateCode);
         }
         fw.close();
+        return dfaList;
     }
-    public void NFAToDFA(){
-        //这个map的key是目标地址，value是源地址，用来将其替换
-        HashMap<Integer,Integer> dstMap = new HashMap<>();
 
-        for(Map.Entry<Pair, ArrayList<Integer>> entry :dfa.transferMat.entrySet()){
-            Pair pair = entry.getKey();
-            ArrayList<Integer> dstStates = entry.getValue();
-            if(pair.getMsg() == 'ε'){
-                dfa.transferMat.remove(pair); //去掉带有空转移的状态
-                for(Integer dst:dstStates)
-                    dfa.stateList.remove(dst);
-                //重新遍历剩下的元素，并且进行替换
-                for(Map.Entry<Pair, ArrayList<Integer>> entry1 :dfa.transferMat.entrySet()){
-                    Pair pair1 = entry1.getKey();
-                    ArrayList<Integer> dstStates1 = entry1.getValue();
-                    //替换掉源地址
-                    pair1.replaceState(dstStates,pair.getState());
-                    //替换目标地址
-                    for (int i = 0; i < dstStates1.size(); i++) {
-                        if(dstStates.contains(dstStates.get(i)))
-                            dstStates1.set(i, pair.getState());//替换
-                    }
-                    //用set对替换后的目标状态进行去重
-                    Set<Integer> set = new HashSet<>(dstStates1);
-                    dstStates1.clear();
-                    dstStates1.addAll(set);
-                }
-            }
-        }
-
+    private void NFAToDFA(){
+        //使用确定化算法将NFA转换成DFA
+        dfa = new DFA(nfa);
+        dfa.generateStateFormat(nfa);//生成状态迁移表
+        dfa.showStateFormat();//打印到控制台
+        dfa.addFormatDataToDFA();
     }
 }

@@ -2,6 +2,7 @@ package part03;
 
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * @className: StateCode
@@ -19,8 +20,10 @@ public class StateCode {
 
             return (char)(state + seqId) + "";
         }
-        else {//如果超过了26个字母，则输出两个打印
+        else if(seqId <= 51){//如果超过了26个字母，则输出两个打印
             return ((char)(state + (seqId - 26)) + "").repeat(2);
+        }else {
+            throw new IndexOutOfBoundsException("Over Maximum of StateCode!");
         }
     }
     //返回所有状态拼接的字符串

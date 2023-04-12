@@ -1,3 +1,0 @@
-f(S,a)=A, f(A,b)=B, {B}
-
-f(A,ε)=B, f(B,a)=C, f(C, ε)=B, f(C, ε)=D, f(A, ε)=D, f(D, ε)=E, f(E, b)=F ,{F}
