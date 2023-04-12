@@ -6,39 +6,39 @@ import java.util.*;
 
 /**
  * @className: DFA
- * @description: TODO ç»§æ‰¿NFAï¼Œå¹¶ä¸”åœ¨å®ƒçš„åŸºç¡€ä¸Šå¤šäº†ä¸€ä¸ªçŠ¶æ€è¡¨
+ * @description: TODO ¼Ì³ĞNFA£¬²¢ÇÒÔÚËüµÄ»ù´¡ÉÏ¶àÁËÒ»¸ö×´Ì¬±í
  * @author: fs956
  * @date: 2023/04/09 17:47
- * @Company: CopyrightÂ© [æ—¥æœŸ] by [ä½œè€…æˆ–ä¸ªäºº]
+ * @Company: Copyright? [ÈÕÆÚ] by [×÷Õß»ò¸öÈË]
  **/
 public class DFA extends NFA{
-    //msgListä½œä¸ºè¡Œå¤´ï¼Œ
-    // stateFormat çš„ key å¯¹åº”çš„çŠ¶æ€ä½œä¸ºåˆ—å¤´
+    //msgList×÷ÎªĞĞÍ·£¬
+    // stateFormat µÄ key ¶ÔÓ¦µÄ×´Ì¬×÷ÎªÁĞÍ·
     Map< Integer,ArrayList<HashSet<Integer>>> stateFormat = new HashMap<>();
-    //è¯¥è¡¨ç”¨æ¥æ˜ å°„ç”±äºå¤šçŠ¶æ€è€Œæ–°äº§ç”Ÿçš„çŠ¶æ€
+    //¸Ã±íÓÃÀ´Ó³ÉäÓÉÓÚ¶à×´Ì¬¶øĞÂ²úÉúµÄ×´Ì¬
     Map<Integer,HashSet<Integer>> newStateMap = new HashMap<>();
-    //ç”¨äºå­˜æ”¾åœ¨æ–°çŠ¶æ€å½“ä¸­äº§ç”Ÿçš„æ›´æ–°çš„çŠ¶æ€
+    //ÓÃÓÚ´æ·ÅÔÚĞÂ×´Ì¬µ±ÖĞ²úÉúµÄ¸üĞÂµÄ×´Ì¬
     Map<Integer,HashSet<Integer>> newerStateMap = new HashMap<>();
-    //ç”¨äºå­˜æ”¾æ‰€æœ‰å·²ç»äº§ç”Ÿçš„å˜é‡
+    //ÓÃÓÚ´æ·ÅËùÓĞÒÑ¾­²úÉúµÄ±äÁ¿
     Map<Integer,HashSet<Integer>> saveAllStateMap = new HashMap<>();
 
-    //ä¸»è¦ä½œä¸ºä¸€ä¸ªå˜é‡åç§°æ–¹ä¾¿ä½¿ç”¨
-    ArrayList<HashSet<Integer>> theFormat;//DFAä¼šæœ‰å¤šä¸ªç»ˆæ­¢çŠ¶æ€
+    //Ö÷Òª×÷ÎªÒ»¸ö±äÁ¿Ãû³Æ·½±ãÊ¹ÓÃ
+    ArrayList<HashSet<Integer>> theFormat;//DFA»áÓĞ¶à¸öÖÕÖ¹×´Ì¬
 
     ArrayList<Integer> endState = new ArrayList<>();
 
     public DFA(NFA nfa) {
         super(nfa.stateCode);
         this.RegularExpression = nfa.RegularExpression;
-        this.msgList.addAll(nfa.msgList);//ä¿¡æ¯åˆ—è¡¨æ˜¯ä¸€è‡´çš„
+        this.msgList.addAll(nfa.msgList);//ĞÅÏ¢ÁĞ±íÊÇÒ»ÖÂµÄ
         this.stateList.addAll(nfa.stateList);
         this.startState = nfa.startState;
         this.endState.add(nfa.endState);
     }
-    //ç”¨ç¡®å®šåŒ–ç®—æ³•ç”Ÿæˆæ–°çš„çŠ¶æ€æœºDFA
-    //è¿™é‡Œå…ˆç”ŸæˆçŠ¶æ€è¡¨ï¼Œæœ€åå†ç”ŸæˆDFAä¿¡æ¯
+    //ÓÃÈ·¶¨»¯Ëã·¨Éú³ÉĞÂµÄ×´Ì¬»úDFA
+    //ÕâÀïÏÈÉú³É×´Ì¬±í£¬×îºóÔÙÉú³ÉDFAĞÅÏ¢
     public void generateStateFormat(NFA nfa){
-        //åˆ›å»ºè¡¨æ ¼å…ˆå°†æ¯è¡Œå¯¹åº”çš„çŠ¶æ€å®šå¥½
+        //´´½¨±í¸ñ£¬ÏÈ¿ª±Ù¿Õ¼ä
         for(Integer state: nfa.stateList){
             theFormat = new ArrayList<>();
             for (int i = 0; i < msgList.size(); i++) {
@@ -46,22 +46,23 @@ public class DFA extends NFA{
             }
             stateFormat.put(state,theFormat);
         }
-        //å¼€å§‹ç»™è¡¨æ ¼è®°å½•å†…å®¹
+        //¿ªÊ¼¸ø±í¸ñ¼ÇÂ¼ÄÚÈİ
         for(Map.Entry<Pair,ArrayList<Integer>> entry:nfa.transferMat.entrySet()){
             Pair pair = entry.getKey();
             ArrayList<Integer> dstStates = entry.getValue();
-            theFormat = stateFormat.get(pair.getState()); //è·å–çŠ¶æ€çš„ä½ç½®ï¼Œä¹Ÿå°±æ˜¯å“ªä¸€è¡Œ,ä¾‹å¦‚A
-            int index = msgList.indexOf(pair.getMsg());//è·å–ä¿¡æ¯çš„ä½ç½®ï¼Œä¹Ÿå°±æ˜¯å“ªä¸€åˆ—ï¼Œä¾‹å¦‚a
-            //ç¡®å®šè¡Œåˆ—åå°±å¯ä»¥å¯¹è¡¨æ ¼è¿›è¡Œè¾“å…¥
+            theFormat = stateFormat.get(pair.getState()); //»ñÈ¡×´Ì¬µÄÎ»ÖÃ£¬Ò²¾ÍÊÇÄÄÒ»ĞĞ,ÀıÈçA
+            int index = msgList.indexOf(pair.getMsg());//»ñÈ¡ĞÅÏ¢µÄÎ»ÖÃ£¬Ò²¾ÍÊÇÄÄÒ»ÁĞ£¬ÀıÈça
+            //È·¶¨ĞĞÁĞºó¾Í¿ÉÒÔ¶Ô±í¸ñ½øĞĞÊäÈë
             HashSet<Integer> nowStates = theFormat.get(index);
-            nowStates.addAll(dstStates);//æ„æ€å°±æ˜¯ä¾‹å¦‚AçŠ¶æ€çš„aè¾“å…¥çš„ç›®æ ‡çŠ¶æ€è®°å½•ä¸ºB
+            nowStates.addAll(dstStates);//ÒâË¼¾ÍÊÇÀıÈçA×´Ì¬µÄaÊäÈëµÄÄ¿±ê×´Ì¬¼ÇÂ¼ÎªB
+            //½«ÒÑÓĞµÄ×´Ì¬´æÈësaveAllStateMapµ±ÖĞ
             HashSet<Integer> set = new HashSet<>();
             set.add(pair.getState());
             saveAllStateMap.put(pair.getState(), set);
-            if(nowStates.size() == 2){//ç­‰äº2æ˜¯ä¸ºäº†é˜²æ­¢æœ‰ä¸¤ä¸ªä»¥ä¸Šçš„æ—¶å€™ï¼Œä¼šé‡å¤ç”Ÿæˆ
-                //å¦‚æœå«æœ‰å¤šä¸ªç›®æ ‡å¦‚fï¼ˆBï¼Œbï¼‰={Aï¼ŒC}ï¼Œåˆ™è¦ç”¨æ–°çš„çŠ¶æ€æ¥æ˜ å°„
+            if(nowStates.size() == 2){//µÈÓÚ2ÊÇÎªÁË·ÀÖ¹ÓĞÁ½¸öÒÔÉÏµÄÊ±ºò£¬»áÖØ¸´Éú³É
+                //Èç¹ûº¬ÓĞ¶à¸öÄ¿±êÈçf£¨B£¬b£©={A£¬C}£¬ÔòÒªÓÃĞÂµÄ×´Ì¬À´Ó³Éä
                 Integer newState = stateCode.getNewStateId();
-                //å¦‚æœæ—§çŠ¶æ€åŒ…å«äº†ç»ˆæ­¢çŠ¶æ€
+                //Èç¹û¾É×´Ì¬°üº¬ÁËÖÕÖ¹×´Ì¬
                 if(nowStates.contains(endState.get(0)))
                     endState.add(newState);
                 stateList.add(newState);
@@ -70,10 +71,53 @@ public class DFA extends NFA{
         }
         saveAllStateMap.putAll(newStateMap);
         generateNewStateFormat();
-        changeOldStates();//æ›¿æ¢æ‰æ—§çŠ¶æ€çš„è¡¨ç¤º
+        changeOldStates();//Ìæ»»µô¾É×´Ì¬µÄ±íÊ¾
+    }
+    private void generateNewStateFormat(){
+        //¸øĞÂµÄ×´Ì¬ĞĞÌí¼ÓÊı¾İ£¬²¢ÇÒÈç¹ûÓÖ²úÉúÁËĞÂµÄ×´Ì¬£¬ĞèÒªµİ¹éµ÷ÓÃ
+        //ÕâÀïÊÇÊ¹ÓÃ±¸·İÀ´²Ù×÷£¬ÒòÎªĞèÒª½«ÒÑ¾­´¦ÀíµÄ×´Ì¬Çå³ıµô£¬±ÜÃâÖØ¸´µİ¹éÉú³ÉĞÂµÄ×´Ì¬
+        for (Map.Entry<Integer, HashSet<Integer>> entry : newStateMap.entrySet()) {
+            //Ïàµ±ÓÚÑ­»·Ã¿Ò»ĞĞĞÂµÄ±í¸ñÊı¾İ
+            Integer newState = entry.getKey();
+            HashSet<Integer> oldStates = entry.getValue();//¾ÉµÄ×´Ì¬
+            theFormat = new ArrayList<>();//¿ªÍØĞÂµÄ±í¸ñ¿Õ¼ä
+            for (int i = 0; i < msgList.size(); i++) {
+                theFormat.add(new HashSet<>());
+            }
+            for (int i = 0; i < theFormat.size(); i++) {
+                //±éÀú¸ÃĞÂĞĞµÄËùÓĞµ¥Ôª¸ñ
+                HashSet<Integer> tmpStates = theFormat.get(i);
+                for (Integer oldState : oldStates){
+                    //²éÕÒ¾É×´Ì¬¶ÔÓ¦µÄµ¥Ôª¸ñ£¬²¢¸øµ½ĞÂµÄµ¥Ôª¸ñ
+                    ArrayList<HashSet<Integer>> oldFormat = stateFormat.get(oldState);
+                    tmpStates.addAll(oldFormat.get(i));
+                }
+                int key = isNewState(tmpStates);
+                //·µ»Ø-1ËµÃ÷¸Ã×´Ì¬²»´æÔÚ
+                if(key == -1){
+                    Integer _newState = stateCode.getNewStateId();
+                    //Èç¹û¾É×´Ì¬°üº¬ÁËÖÕÖ¹×´Ì¬
+                    if(tmpStates.contains(endState.get(0)))
+                        endState.add(_newState);
+                    stateList.add(_newState);
+                    newerStateMap.put(_newState, tmpStates);
+                }else if(key != -2){//Èô·µ»Ø-2ÔòÎª¿Õ£¬²»Îª¿ÕÔòËµÃ÷ÊÇÖØ¸´µÄ×´Ì¬
+                    //¼ÈÈ»ÊÇÖØ¸´µÄ×´Ì¬Ôò¿ÉÒÔÖ¸ÏòÖ®Ç°ÒÑ¾­´æÏÂÀ´µÄ×´Ì¬±äÁ¿
+                    //ÕâÑù¾Í¿ÉÒÔÍ¨¹ıÖ¸Õë½«²»Í¬µ¥Ôª¸ñÖĞÏàÍ¬µÄÒ»×é×´Ì¬Í³Ò»±íÊ¾
+                    theFormat.set(i,saveAllStateMap.get(key));
+                }
+            }
+            stateFormat.put(newState, theFormat);//ÌîºÃÕâÒ»ĞĞºó½«ÆäÌí¼Óµ½±íµ±ÖĞ
+        }
+        newStateMap.clear();//Çå³ıÒÑ¾­´¦Àí¹ıµÄ×´Ì¬
+        newStateMap.putAll(newerStateMap);
+        saveAllStateMap.putAll(newerStateMap);
+        newerStateMap.clear();
+        if(!newStateMap.isEmpty()) //»¹ÓĞÎ´´¦ÀíµÄĞÂ×´Ì¬Ôòµİ¹éµ÷ÓÃ
+            generateNewStateFormat();
     }
     private void changeOldStates(){
-        //å°†æ—§çš„çŠ¶æ€å…¨éƒ¨è½¬æ¢æˆæ–°çš„çŠ¶æ€
+        //½«¾ÉµÄ×´Ì¬È«²¿×ª»»³ÉĞÂµÄ×´Ì¬
         for(Map.Entry<Integer,HashSet<Integer>> entry:saveAllStateMap.entrySet()){
             Integer newState = entry.getKey();
             HashSet<Integer> oldState = entry.getValue();
@@ -81,107 +125,60 @@ public class DFA extends NFA{
             oldState.add(newState);
         }
     }
-    private void generateNewStateFormat(){
-        //ç»™æ–°çš„çŠ¶æ€è¡Œæ·»åŠ æ•°æ®ï¼Œå¹¶ä¸”å¦‚æœåˆäº§ç”Ÿäº†æ–°çš„çŠ¶æ€ï¼Œéœ€è¦é€’å½’è°ƒç”¨
-        //è¿™é‡Œæ˜¯ä½¿ç”¨å¤‡ä»½æ¥æ“ä½œï¼Œå› ä¸ºéœ€è¦å°†å·²ç»å¤„ç†çš„çŠ¶æ€æ¸…é™¤æ‰ï¼Œé¿å…é‡å¤é€’å½’ç”Ÿæˆæ–°çš„çŠ¶æ€
-        for (Map.Entry<Integer, HashSet<Integer>> entry : newStateMap.entrySet()) {
-            //ç›¸å½“äºå¾ªç¯æ¯ä¸€è¡Œæ–°çš„è¡¨æ ¼æ•°æ®
-            Integer newState = entry.getKey();
-            HashSet<Integer> oldStates = entry.getValue();//æ—§çš„çŠ¶æ€
-            theFormat = new ArrayList<>();//å¼€æ‹“æ–°çš„è¡¨æ ¼ç©ºé—´
-            for (int i = 0; i < msgList.size(); i++) {
-                theFormat.add(new HashSet<>());
-            }
-            for (int i = 0; i < theFormat.size(); i++) {
-                //éå†è¯¥æ–°è¡Œçš„æ‰€æœ‰å•å…ƒæ ¼
-                HashSet<Integer> tmpStates = theFormat.get(i);
-                for (Integer oldState : oldStates){
-                    //æŸ¥æ‰¾æ—§çŠ¶æ€å¯¹åº”çš„å•å…ƒæ ¼ï¼Œå¹¶ç»™åˆ°æ–°çš„å•å…ƒæ ¼
-                    ArrayList<HashSet<Integer>> oldFormat = stateFormat.get(oldState);
-                    tmpStates.addAll(oldFormat.get(i));
-                }
-                int key = isNewState(tmpStates);
-                //è¿”å›-1è¯´æ˜è¯¥çŠ¶æ€ä¸å­˜åœ¨
-                if(key == -1){
-                    Integer _newState = stateCode.getNewStateId();
-                    //å¦‚æœæ—§çŠ¶æ€åŒ…å«äº†ç»ˆæ­¢çŠ¶æ€
-                    if(tmpStates.contains(endState.get(0)))
-                        endState.add(_newState);
-                    stateList.add(_newState);
-                    newerStateMap.put(_newState, tmpStates);
-                }else if(key != -2){//è‹¥è¿”å›-2åˆ™ä¸ºç©ºï¼Œä¸ä¸ºç©ºåˆ™è¯´æ˜æ˜¯é‡å¤çš„çŠ¶æ€
-                    //TODO æ—¢ç„¶æ˜¯é‡å¤çš„çŠ¶æ€åˆ™å¯ä»¥æŒ‡å‘ä¹‹å‰å·²ç»å­˜ä¸‹æ¥çš„çŠ¶æ€å˜é‡
-                    //TODO è¿™æ ·å°±å¯ä»¥é€šè¿‡æŒ‡é’ˆå°†ä¸åŒå•å…ƒæ ¼ä¸­ç›¸åŒçš„ä¸€ç»„çŠ¶æ€ç»Ÿä¸€è¡¨ç¤º
-                    theFormat.set(i,saveAllStateMap.get(key));
-                }
-            }
-            //å¡«å¥½è¿™ä¸€è¡Œåï¼Œå°†å…¶æ”¾å…¥
-            stateFormat.put(newState, theFormat);
-        }
-        newStateMap.clear();//æ¸…é™¤å·²ç»å¤„ç†è¿‡çš„çŠ¶æ€
-        newStateMap.putAll(newerStateMap);
-        saveAllStateMap.putAll(newerStateMap);
-        newerStateMap.clear();
-        if(!newStateMap.isEmpty()) //è¿˜æœ‰æœªå¤„ç†çš„æ–°çŠ¶æ€åˆ™é€’å½’è°ƒç”¨
-            generateNewStateFormat();
-    }
-    //ç”¨äºåˆ¤æ–­å½“å‰çš„çŠ¶æ€æ˜¯å¦å·²ç»å­˜åœ¨
+    //ÓÃÓÚÅĞ¶Ïµ±Ç°µÄ×´Ì¬ÊÇ·ñÒÑ¾­´æÔÚ
     private Integer isNewState(HashSet<Integer> nowStates){
         if(nowStates.isEmpty())
             return -2;
         for (Integer key: saveAllStateMap.keySet()){
             HashSet<Integer> set = saveAllStateMap.get(key);
-            if(set.equals(nowStates)) //å­˜åœ¨ç›¸ç­‰çš„set
+            if(set.equals(nowStates)) //´æÔÚÏàµÈµÄset
                 return key;
         }
         return -1;
     }
     public void addFormatDataToDFA(){
-        //éå†æ•´ä¸ªè¡¨æ ¼ï¼Œé€è¡Œè¯»å–
+        //±éÀúÕû¸ö±í¸ñ£¬ÖğĞĞ¶ÁÈ¡
         for (Map.Entry<Integer,ArrayList<HashSet<Integer>>> entry
                 :stateFormat.entrySet()){
             int srcState = entry.getKey();
             theFormat = entry.getValue();
-            //éå†æ¯ä¸€è¡Œå†…çš„æ¯ä¸ªæ•°æ®
+            //±éÀúÃ¿Ò»ĞĞÄÚµÄÃ¿¸öÊı¾İ
             for(int i=0;i < theFormat.size();i++){
                 HashSet<Integer> data = theFormat.get(i);
-                if(!data.isEmpty()) //åˆ¤æ–­è¯¥çŠ¶æ€è¿ç§»æ˜¯å¦å­˜åœ¨
+                if(!data.isEmpty()) //ÅĞ¶Ï¸Ã×´Ì¬Ç¨ÒÆÊÇ·ñ´æÔÚ
                     transferMat.put(new Pair(srcState,msgList.get(i)),new ArrayList<>(data));
             }
         }
     }
     public boolean parseString(String str){
-
         int nowState = this.startState;
         for (int i = 0; i < str.length(); i++) {
-            char ch = str.charAt(i);//å½“å‰å­—ç¬¦è¾“å…¥
-            int msgIndex = this.msgList.indexOf(ch);//æ‰¾åˆ°æ‰€åœ¨åˆ—çš„ç´¢å¼•
-            if(msgIndex == -1) //æ²¡æœ‰msgå’Œè¾“å…¥çš„å­—ç¬¦åŒ¹é…
+            char ch = str.charAt(i);//µ±Ç°×Ö·ûÊäÈë
+            int msgIndex = this.msgList.indexOf(ch);//ÕÒµ½ËùÔÚÁĞµÄË÷Òı
+            if(msgIndex == -1) //Ã»ÓĞmsgºÍÊäÈëµÄ×Ö·ûÆ¥Åä
                 return false;
-            //è®¿é—®æ‰€åœ¨çš„å•å…ƒæ ¼ï¼Œå½“å‰è¡Œæ ¹æ®å½“å‰çŠ¶æ€è·å–
+            //·ÃÎÊËùÔÚµÄµ¥Ôª¸ñ£¬µ±Ç°ĞĞ¸ù¾İµ±Ç°×´Ì¬»ñÈ¡
             Iterator<Integer> ite = stateFormat.get(nowState).get(msgIndex).iterator();
-            //åˆ¤æ–­è®¿é—®çš„å•å…ƒæ ¼è¿˜æœ‰æ— å…ƒç´ 
-            //æ— åˆ™åˆ¤æ–­æ˜¯å¦ä¸ºç»ˆæ­¢çŠ¶æ€
+            //ÅĞ¶Ï·ÃÎÊµÄµ¥Ôª¸ñ»¹ÓĞÎŞÔªËØ
             if(ite.hasNext())
-                nowState = ite.next();//æœ‰åˆ™è¿›å…¥ä¸‹ä¸€æ¬¡å¾ªç¯
-                //ä¸ä¸ºç»ˆæ­¢çŠ¶æ€ï¼Œè¯´æ˜åŒ¹é…å¤±è´¥ï¼Œè¯¥è‡ªåŠ¨æœºæ— æ³•è¯†åˆ«è¯¥å­—ç¬¦ä¸²
-            else
-                return false;
+                nowState = ite.next();//ÓĞÔò½øÈëÏÂÒ»´ÎÑ­»·
+                // ²»ÎªÖÕÖ¹×´Ì¬£¬ËµÃ÷Æ¥ÅäÊ§°Ü£¬¸Ã×Ô¶¯»úÎŞ·¨Ê¶±ğ¸Ã×Ö·û´®
+            else return false;
         }
         return endState.contains(nowState);
     }
     public String generateFile() {
-        //outputï¼š K={Sï¼ŒAï¼ŒB}ï¼›Î£={a,b}ï¼›f(S,a)=A, f(A,b)=Bï¼›Sï¼›Z={B}
+        //output£º K={S£¬A£¬B}£»¦²={a,b}£»f(S,a)=A, f(A,b)=B£»S£»Z={B}
         String tmp = "K= {";
-        tmp += this.getStateList(); // Sï¼ŒAï¼ŒB
+        tmp += this.getStateList(); // S£¬A£¬B
         tmp += "}; ";
-        //Î£={a,b}
-        tmp += "Î£={";
+        //¦²={a,b}
+        tmp += "¦²={";
         tmp += this.getMsgList();
         tmp += "}; \n";
-        //f(S,a)=A, f(A,b)=Bï¼›
+        //f(S,a)=A, f(A,b)=B£»
         tmp += this.getTransferList() + "; \n";
-        //Sï¼›
+        //S£»
         tmp += stateCode.queryCharState(this.startState);
         tmp += "; ";
         //Z={B}
@@ -195,7 +192,7 @@ public class DFA extends NFA{
     void showStateFormat(){
         System.out.println("DFA State Format");
         System.out.print("   ");
-        //è¾“å‡ºåˆ—å¤´
+        //Êä³öÁĞÍ·
         for(Character c:msgList){
             System.out.print(c + "  ");
         }
@@ -211,7 +208,7 @@ public class DFA extends NFA{
                 System.out.print(info + "  ");
             }
             else
-                System.out.print(stateCode.queryCharState(entry.getKey())+ "  ");//è¾“å‡ºè¡Œå¤´çŠ¶æ€
+                System.out.print(stateCode.queryCharState(entry.getKey())+ "  ");//Êä³öĞĞÍ·×´Ì¬
             theFormat = entry.getValue();
             for(HashSet<Integer> data:theFormat){
                 String info = "";

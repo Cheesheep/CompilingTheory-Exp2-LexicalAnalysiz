@@ -103,46 +103,43 @@ public class NFA {
 	}
 
 	//操作符运算
-	private NFA create(char regularExp) {
+	private NFA create(char msg) {
 		//a
 		NFA nfa = new NFA(this.stateCode);
 		generateNewState(nfa);
-		nfa.msgList.add(regularExp);
-		nfa.addEdge(nfa.startState, nfa.endState, regularExp);
+		nfa.msgList.add(msg);
+		nfa.addEdge(nfa.startState, nfa.endState, msg);
 		return nfa;
 	}
-	
 	private NFA connect(NFA other) {
 		//r1 o r2 连接符：‘-’
 		//r1.connect(r2)
 		NFA nfa = new NFA(this.stateCode);
 		nfa.startState = this.startState;
 		nfa.endState = other.endState;
+		//将数据都拼接并迁移过来
 		nfa.transferMat = this.collectTransferMat(other.transferMat);
 		nfa.stateList = this.collectStateList(other.stateList);
 		nfa.msgList = this.collectMsgList(other.msgList);
+		//生成连接的边
 		nfa.addEdge(this.endState, other.startState, epsilon);
 		return nfa;
 	}
-	
 	private NFA or(NFA other) {
 		//r1 | r2
-		//return NFA(r1) union NFA(r2)
+		//用法： n1.or(n2)
 		NFA nfa = new NFA(this.stateCode);
-		//create new start/end state
 		//分支的起点和终点
 		generateNewState(nfa);
-		//将新的两个都加进去
+		//将新的两个数据都添加进去
 		nfa.collectTransferMat(this.collectTransferMat(other.transferMat));
 		nfa.collectStateList(this.collectStateList(other.stateList));
 		nfa.collectMsgList(this.collectMsgList(other.msgList));
-		
 		//create new epsilon edge
 		nfa.addEdge(nfa.startState, this.startState, epsilon);
 		nfa.addEdge(nfa.startState, other.startState, epsilon);
 		nfa.addEdge(other.endState, nfa.endState, epsilon);
 		nfa.addEdge(this.endState, nfa.endState, epsilon);
-		
 		return nfa;
 	}
 	private NFA closure(){
@@ -158,7 +155,6 @@ public class NFA {
 		nfa.addEdge(nfa.startState,this.startState,epsilon);
 		nfa.addEdge(this.endState,nfa.endState,epsilon);
 		nfa.addEdge(nfa.startState, nfa.endState,epsilon);//允许为空直接跳跃
-
 		return nfa;
 	}
 	private void generateNewState(NFA nfa){
@@ -256,7 +252,6 @@ public class NFA {
 					ArrayList<Integer> dstStates1 = entry1.getValue();
 					//源地址若有空转移的目标则替换掉
 					pair1.replaceState(dstStates,pair.getState());
-
 					//同理，替换目标地址
 					for (int i = 0; i < dstStates1.size(); i++) {
 						if(dstStates.contains(dstStates1.get(i)))

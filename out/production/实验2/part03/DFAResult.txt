@@ -1,51 +1,51 @@
 the 1 DFA: 
-K= {A, B, F, N, O}; 危={a, b}; 
+K= {A, B, F, N, O}; Σ={a, b}; 
 f(O, b)= {O}, f(A, a)= {B}, f(B, a)= {F}, f(B, b)= {O}, f(F, a)= {B}, f(O, a)= {F}, 
 ; 
 A; Z={N, O, }
  ----------------
 the 2 DFA: 
-K= {C, F}; 危={a, b}; 
+K= {C, F}; Σ={a, b}; 
 f(C, a)= {C}, f(C, b)= {F}, ; 
 C; Z={F, }
  ----------------
 the 3 DFA: 
-K= {A, B, F, H}; 危={0, 1}; 
+K= {A, B, F, H}; Σ={0, 1}; 
 f(A, 0)= {B}, f(B, 0)= {F}, f(B, 1)= {H}, f(F, 0)= {H}, ; 
 A; Z={H, }
  ----------------
 the 4 DFA: 
-K= {C, F, H, J, T, V}; 危={a, b, c}; 
+K= {C, F, H, J, T, V}; Σ={a, b, c}; 
 f(C, a)= {C}, f(C, b)= {F}, f(T, a)= {V}, f(F, a)= {J}, f(F, b)= {H}, f(F, c)= {H}, 
 f(H, c)= {T}, f(J, b)= {F}, ; 
 C; Z={V, }
  ----------------
 the 5 DFA: 
-K= {C, H, J, V, X, Y, Z}; 危={a, b, c}; 
+K= {C, H, J, V, X, Y, Z}; Σ={a, b, c}; 
 f(C, a)= {C}, f(C, b)= {H}, f(V, a)= {X}, f(H, a)= {J}, f(H, b)= {H}, f(Y, a)= {Z}, 
 f(H, c)= {Y}, f(Y, b)= {H}, f(Y, c)= {Y}, f(J, b)= {H}, f(Z, b)= {H}, ; 
 C; Z={X, Z, }
  ----------------
 the 6 DFA: 
-K= {F, H, J, T, W}; 危={a, b, c}; 
+K= {F, H, J, T, W}; Σ={a, b, c}; 
 f(T, a)= {H}, f(F, a)= {J}, f(F, b)= {H}, f(W, a)= {W}, f(F, c)= {H}, f(W, b)= {F}, 
 f(W, c)= {T}, f(J, b)= {F}, ; 
 W; Z={H, }
  ----------------
 the 7 DFA: 
-K= {C, F, H, J, R, Y, Z}; 危={a, b, c}; 
+K= {C, F, H, J, R, Y, Z}; Σ={a, b, c}; 
 f(R, a)= {H}, f(C, a)= {C}, f(C, b)= {F}, f(F, a)= {J}, f(F, b)= {H}, f(F, c)= {Y}, 
 f(Y, a)= {Z}, f(J, b)= {F}, ; 
 C; Z={H, Y, Z, }
  ----------------
 the 8 DFA: 
-K= {C, F, H, J, R, T, EE}; 危={a, b, c, s, d, e}; 
+K= {C, F, H, J, R, T, EE}; Σ={a, b, c, s, d, e}; 
 f(EE, s)= {T}, f(C, a)= {C}, f(R, s)= {T}, f(C, b)= {F}, f(T, s)= {T}, f(F, b)= {H}, 
 f(T, e)= {H}, f(F, c)= {EE}, f(F, d)= {J}, f(J, b)= {F}, ; 
 C; Z={H, EE, }
  ----------------
 the 9 DFA: 
-K= {D, H, J, N, X, Z, KK, LL, MM, NN}; 危={0, 1}; 
+K= {D, H, J, N, X, Z, KK, LL, MM, NN}; Σ={0, 1}; 
 f(X, 0)= {Z}, f(Z, 1)= {D}, f(D, 0)= {LL}, f(D, 1)= {KK}, f(KK, 0)= {MM}, f(KK, 1)= {KK}, 
 f(LL, 0)= {LL}, f(LL, 1)= {NN}, f(MM, 0)= {LL}, f(MM, 1)= {NN}, f(NN, 0)= {MM}, f(H, 1)= {J}, 
 f(NN, 1)= {KK}, f(J, 0)= {D}, f(N, 1)= {D}, ; 
